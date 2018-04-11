@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Robot</string>
+    <string name="mmButton1">Control remoto</string>
+    <string name="mmButton2">Solución laberinto</string>
+    <string name="mmButton3">Reto del acelerómetro</string>
+    <string name="mmButton4">Log de comunicación</string>
+
+    <string name="rTitle">Control remoto</string>
+</resources>
