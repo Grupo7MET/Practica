@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">Robot</string>
-    <string name="mmButton1">Control remoto</string>
-    <string name="mmButton2">Solución laberinto</string>
-    <string name="mmButton3">Reto del acelerómetro</string>
-    <string name="mmButton4">Log de comunicación</string>
+    <string name="mmButton1">Remote Control</string>
+    <string name="mmButton2">Labyrinth solving</string>
+    <string name="mmButton3">Accelerometer Challenge</string>
+    <string name="mmButton4">Communication LOG</string>
 
-    <string name="rTitle">Control remoto</string>
+    <string name="rTitle">Remote control</string>
+    <string name="rTemp">Degrees</string>
+    <string name="rManual">Manual</string>
+    <string name="rAuto">Auto</string>
+    <string name="rLigths">Lights</string>
+    <string name="rVelocity">Velocity</string>
+    <string name="rThrottle">Throttle</string>
+    <string name="rGearDown">-</string>
+    <string name="rGearUp">+</string>
+
+
 </resources>

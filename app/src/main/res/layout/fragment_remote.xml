@@ -17,38 +17,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="8"
-            android:orientation="horizontal">
+            android:layout_weight="8">
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnOff"
-                android:text="Off"/>
+                android:textSize="36dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/tvTitle"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/btnOff"
-                android:text="On"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="36dp"
-                    android:layout_centerInParent="true"
-                    tools:text="@string/rTitle" />
-            </RelativeLayout>
-
-        </LinearLayout>
-
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,34 +44,31 @@
                 android:orientation="vertical"
                 android:layout_weight="4">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_weight="3">
 
-                    <RelativeLayout
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/tvTemp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="3">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Temperatura"
-                            android:layout_centerInParent="true"
-                            android:id="@+id/tvTemp"/>
+                        android:src="@mipmap/ic_danger"
+                        android:id="@+id/ivDanger"/>
+                </RelativeLayout>
 
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@mipmap/ic_danger"/>
-                    </RelativeLayout>
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -103,53 +81,63 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2">
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:layout_centerInParent="true">
+
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Manual"/>
+                            android:id="@+id/btnMan"/>
+
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Auto"/>
+                            android:id="@+id/btnAuto"/>
+
                     </LinearLayout>
+
                 </RelativeLayout>
 
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/btnLights"
-                    android:text="luces"
                     android:layout_weight="2"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="velocidad"
                         android:textSize="25dp"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:id="@+id/tvVelocity"/>
+
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:text="XX"
                         android:textSize="50dp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:id="@+id/tvVelocityValue"/>
+
                 </RelativeLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -162,64 +150,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="acelerar"/>
+                    android:id="@+id/btnThrottle"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_weight="2">
 
-                    <LinearLayout
+                    <Button
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_weight="1">
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="1"
-                            android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:id="@+id/btnGearDown"/>
 
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="2"
-                            android:layout_weight="1"/>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="3"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <Button
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_weight="1">
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="-1"
-                            android:layout_weight="1"/>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="-2"
-                            android:layout_weight="1"/>
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="-3"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
+                        android:layout_weight="1"
+                        android:id="@+id/btnGearUp"/>
 
                 </LinearLayout>
+
             </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
+
 </RelativeLayout>
