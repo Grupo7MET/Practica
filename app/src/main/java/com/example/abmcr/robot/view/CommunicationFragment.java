@@ -34,13 +34,7 @@ public class CommunicationFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
-        View v = inflater.inflate(R.layout.fragment_communication,container,false);
-        bindViews(v);
+        View v = inflater.inflate(R.layout.fragment_communication, container, false);
         return v;
-    }
-
-    private void bindViews(View v){
-        textView = v.findViewById(R.id.textview);
-        textView.setText("LOG DE COMUNICACIÓN");
     }
 }
