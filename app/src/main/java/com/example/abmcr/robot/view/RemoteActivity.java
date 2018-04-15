@@ -2,6 +2,7 @@ package com.example.abmcr.robot.view;
 
 
 import android.content.pm.ActivityInfo;
+import android.gesture.GestureLibrary;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

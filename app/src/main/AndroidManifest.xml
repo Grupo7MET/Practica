@@ -31,8 +31,6 @@
         <activity android:name=".view.CommunicationActivity"
             android:parentActivityName=".view.CommunicationActivity" />
 
-        <activity android:name=".view.GestureActivity"
-            android:parentActivityName=".view.GestureActivity" />
     </application>
 
 </manifest>

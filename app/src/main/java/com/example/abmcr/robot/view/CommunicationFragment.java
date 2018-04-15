@@ -1,5 +1,6 @@
 package com.example.abmcr.robot.view;
 
+import android.gesture.GestureLibrary;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,8 +16,8 @@ import com.example.abmcr.robot.R;
  */
 
 public class CommunicationFragment extends Fragment {
-    private TextView textView;
 
+    private TextView textView;
     //private MainViewModel viewModel;
 
     public static CommunicationFragment newInstance(){
