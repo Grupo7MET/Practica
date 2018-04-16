@@ -15,7 +15,8 @@ import com.example.abmcr.robot.R;
  */
 
 public class AccelerometerFragment extends Fragment {
-    private TextView textView;
+
+    private TextView tvTitle, tvX,tvY,tvZ, tvXValue,tvYValue,tvZValue;
 
     //private MainViewModel viewModel;
 
@@ -40,7 +41,17 @@ public class AccelerometerFragment extends Fragment {
     }
 
     private void bindViews(View v){
-        textView = v.findViewById(R.id.textview);
-        textView.setText("RETO DEL ACELERÓMETRO");
+        tvTitle = v.findViewById(R.id.tvTitle);
+        tvX = v.findViewById(R.id.tvX);
+        tvY = v.findViewById(R.id.tvY);
+        tvZ = v.findViewById(R.id.tvZ);
+        tvXValue = v.findViewById(R.id.tvXValue);
+        tvYValue = v.findViewById(R.id.tvYValue);
+        tvZValue = v.findViewById(R.id.tvZValue);
+
+        tvTitle.setText(R.string.aTitle);
+        tvX.setText(R.string.aX);
+        tvY.setText(R.string.aY);
+        tvZ.setText(R.string.aZ);
     }
 }

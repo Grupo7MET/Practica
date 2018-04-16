@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Robot</string>
+
     <string name="mmButton1">Remote Control</string>
     <string name="mmButton2">Labyrinth solving</string>
     <string name="mmButton3">Accelerometer Challenge</string>
@@ -9,11 +10,16 @@
     <string name="rTemp">Degrees</string>
     <string name="rManual">Manual</string>
     <string name="rAuto">Auto</string>
-    <string name="rLigths">Lights</string>
+    <string name="rLigthsOn">Turn lights on</string>
+    <string name="rLigthsOff">Turn lights off</string>
     <string name="rVelocity">Velocity</string>
     <string name="rThrottle">Throttle</string>
     <string name="rGearDown">-</string>
     <string name="rGearUp">+</string>
 
+    <string name="aTitle">Accelerometer challenge</string>
+    <string name="aX">Accelerometer X</string>
+    <string name="aY">Accelerometer Y</string>
+    <string name="aZ">Accelerometer Z</string>
 
 </resources>

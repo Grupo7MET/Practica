@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.abmcr.robot.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by abmcr on 21/03/2018.
  */
@@ -18,6 +20,7 @@ import com.example.abmcr.robot.R;
 public class CommunicationFragment extends Fragment {
 
     private TextView textView;
+    private ArrayList<String> messages = new ArrayList<String>();
     //private MainViewModel viewModel;
 
     public static CommunicationFragment newInstance(){
@@ -27,6 +30,7 @@ public class CommunicationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
+        messages.clear();
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {

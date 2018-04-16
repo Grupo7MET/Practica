@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,8 +39,6 @@ public class RemoteFragment extends Fragment {
     private ImageView ivDanger;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
     private int gear;
-    private String curve;
-    private boolean pinta;
 
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
@@ -70,8 +67,6 @@ public class RemoteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         bindViews(v);
         gear = constants.INIT_GEAR;
-        curve = "";
-        pinta = false;
         return v;
     }
 
@@ -99,7 +94,7 @@ public class RemoteFragment extends Fragment {
         tvVelocity.setText(R.string.rVelocity);
         btnAuto.setText(R.string.rAuto);
         btnManual.setText(R.string.rManual);
-        btnLights.setText(R.string.rLigths);
+        btnLights.setText(R.string.rLigthsOn);
         btnThrottle.setText(R.string.rThrottle);
         btnGearDown.setText(R.string.rGearDown);
         btnGearUp.setText(R.string.rGearUp);
@@ -156,7 +151,6 @@ public class RemoteFragment extends Fragment {
             }
         };
 
-        //TODO els listeners dels buttons
         btnThrottle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -169,6 +163,50 @@ public class RemoteFragment extends Fragment {
                 return false;
             }
         });
+
+        btnAuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAuto.setEnabled(false);
+                btnManual.setEnabled(true);
+                Toast.makeText(getContext(), "Auto mode", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnManual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAuto.setEnabled(true);
+                btnManual.setEnabled(false);
+                Toast.makeText(getContext(), "Manual mode", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnLights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
+                    btnLights.setText(R.string.rLigthsOff);
+                }else{
+                    btnLights.setText(R.string.rLigthsOn);
+                }
+            }
+        });
+
+        btnGearDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Dec gear", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnGearUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Inc gear", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
