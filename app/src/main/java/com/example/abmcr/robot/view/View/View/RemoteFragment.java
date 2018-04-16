@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view;
+package com.example.abmcr.robot.view.View.View;
 
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
@@ -25,7 +25,7 @@ import com.example.abmcr.robot.R;
 
 import java.util.ArrayList;
 
-import Model.Constants;
+import com.example.abmcr.robot.view.View.Model.Constants;
 
 import static android.content.Context.SENSOR_SERVICE;
 

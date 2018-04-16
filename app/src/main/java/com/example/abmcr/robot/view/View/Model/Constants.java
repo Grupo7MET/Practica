@@ -1,4 +1,4 @@
-package Model;
+package com.example.abmcr.robot.view.View.Model;
 
 /**
  * Created by Manel on 13/4/18.

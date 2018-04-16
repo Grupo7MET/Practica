@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view;
+package com.example.abmcr.robot.view.View.View;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;

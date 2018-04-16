@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view;
+package com.example.abmcr.robot.view.View.View;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.abmcr.robot.R;
+import com.example.abmcr.robot.view.View.View.MainActivity;
 
 /**
  * Created by abmcr on 21/03/2018.

@@ -1,4 +1,4 @@
-package Model;
+package com.example.abmcr.robot.view.View.Model;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -62,15 +62,20 @@ public class Repository implements CommunicationService.CommunicationServiceInte
 
     /*------------------------- Service interface callbakcs -----------------------*/
     @Override
-    public void postSecondsValue(int seconds) {
+    public void rxMessage(String msg) {
         //push seconds value to the viewmodel
-        repositoryCallback.onSecondsUpdate(seconds);
+        repositoryCallback.onIncomingMessage(msg.toString());
+    }
+
+    public void txMessage(String msg) {
+        //push seconds value to the viewmodel
+        repositoryCallback.onIncomingMessage(msg.toString());
     }
 
     /*-------------------------- Repository Interface -----------------------------*/
     public interface RepositoryCallbacks {
 
-        void onSecondsUpdate(int seconds);
+        void onIncomingMessage(String msg);
 
         void onServiceStopped();
     }

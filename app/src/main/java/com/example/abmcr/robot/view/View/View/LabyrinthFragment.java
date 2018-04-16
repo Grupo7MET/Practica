@@ -1,21 +1,18 @@
-package com.example.abmcr.robot.view;
+package com.example.abmcr.robot.view.View.View;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abmcr.robot.R;
 
-import Model.Constants;
+import com.example.abmcr.robot.view.View.Model.Constants;
 
 /**
  * Created by abmcr on 21/03/2018.

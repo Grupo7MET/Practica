@@ -9,27 +9,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.SplashActivity">
+        <activity android:name=".view.View.View.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.MainActivity"
-            android:parentActivityName=".view.MainActivity" />
+        <activity android:name=".view.View.View.MainActivity"
+            android:parentActivityName=".view.View.View.MainActivity" />
 
-        <activity android:name=".view.RemoteActivity"
-            android:parentActivityName=".view.RemoteActivity" />
+        <activity android:name=".view.View.View.RemoteActivity"
+            android:parentActivityName=".view.View.View.RemoteActivity" />
 
-        <activity android:name=".view.AccelerometerActivity"
-            android:parentActivityName=".view.AccelerometerActivity" />
+        <activity android:name=".view.View.View.AccelerometerActivity"
+            android:parentActivityName=".view.View.View.AccelerometerActivity" />
 
-        <activity android:name=".view.LabyrinthActivity"
-            android:parentActivityName=".view.LabyrinthActivity" />
+        <activity android:name=".view.View.View.LabyrinthActivity"
+            android:parentActivityName=".view.View.View.LabyrinthActivity" />
 
-        <activity android:name=".view.CommunicationActivity"
-            android:parentActivityName=".view.CommunicationActivity" />
+        <activity android:name=".view.View.View.CommunicationActivity"
+            android:parentActivityName=".view.View.View.CommunicationActivity" />
 
     </application>
 
