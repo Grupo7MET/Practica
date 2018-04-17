@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.abmcr.robot.R;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class MainActivity extends AppCompatActivity {

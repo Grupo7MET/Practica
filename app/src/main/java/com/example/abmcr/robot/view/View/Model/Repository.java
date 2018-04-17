@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
+import java.util.Calendar;
+
 /**
- * Created by Manel on 16/4/18.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class Repository implements CommunicationService.CommunicationServiceInterface{
@@ -18,6 +20,7 @@ public class Repository implements CommunicationService.CommunicationServiceInte
 
     private boolean serviceIsBound;
 
+    //Constructor
     public Repository(RepositoryCallbacks callbacks) {
         //get the interface from the viewmodel so we can push values to the viewmodel
         this.repositoryCallback = callbacks;
@@ -27,9 +30,9 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         Intent intent = new Intent(context, CommunicationService.class);
         context.startService(intent);
         context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
     }
 
+    //When we want to stop the messaging service
     public void stopService(Context context) {
         if (serviceIsBound) {
             context.unbindService(serviceConnection);
@@ -60,23 +63,24 @@ public class Repository implements CommunicationService.CommunicationServiceInte
     };
 
 
-    /*------------------------- Service interface callbakcs -----------------------*/
+    /*----------------- Service interface callbakcs to Communication Service -------------------*/
     @Override
     public void rxMessage(String msg) {
-        //push seconds value to the viewmodel
-        repositoryCallback.onIncomingMessage(msg.toString());
+        //push received message to the viewmodel
+        String time = Calendar.getInstance().getTime().toString();
+        repositoryCallback.onIncomingMessage(time + " Arduino says: " + msg);
     }
 
     public void txMessage(String msg) {
-        //push seconds value to the viewmodel
-        repositoryCallback.onIncomingMessage(msg.toString());
+        //push transmitted message to the viewmodel
+        String time = Calendar.getInstance().getTime().toString();
+        repositoryCallback.onIncomingMessage(time + " Android says: " + msg);
     }
 
-    /*-------------------------- Repository Interface -----------------------------*/
+    /*-------------------- Repository Interface to ViewModel ------------------------*/
+
     public interface RepositoryCallbacks {
-
         void onIncomingMessage(String msg);
-
         void onServiceStopped();
     }
 }

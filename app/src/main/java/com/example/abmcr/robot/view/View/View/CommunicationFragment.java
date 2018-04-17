@@ -17,17 +17,15 @@ import com.example.abmcr.robot.view.View.ViewModel.LogViewModel;
 import java.util.ArrayList;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class CommunicationFragment extends Fragment {
 
-    private TextView tvOut;
-    //private ArrayList<String> alMessages = new ArrayList<String>();
-    private String aux;
-
+    private static TextView tvOut;
     private LogViewModel viewModel;
-    private Observer<String> sMessages;
+    private Observer<String> sObserverMessages;
+    private static String sMessage = "";
 
     public static CommunicationFragment newInstance(){
         return new CommunicationFragment();
@@ -36,7 +34,6 @@ public class CommunicationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        //messages.clear();
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -46,26 +43,43 @@ public class CommunicationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_communication, container, false);
-        bindViews(v);
         initViewModel();
+        bindViews(v);
         return v;
     }
 
+    //Assign view components
     private void bindViews(View v){
         tvOut = v.findViewById(R.id.tvOut);
-
-        aux = "aaa"+'\n'+"bbb";
-        tvOut.setText(aux);
     }
 
+    //Assign ViewModel to this fragment & the observer variable
     private void initViewModel(){
-        viewModel = ViewModelProviders.of(getActivity()).get(LogViewModel.class);
 
-        sMessages = new Observer<String>() {
+        viewModel = ViewModelProviders.of(this).get(LogViewModel.class);
+        sObserverMessages = new Observer<String>() {
             @Override
             public void onChanged(@Nullable String msg) {
-                tvOut.setText(msg);
+                printLogs(msg);
             }
         };
+        viewModel.printMessages(getContext()).observe(this, sObserverMessages);
+    }
+
+    //Data is printed on screen through a TextView
+    public static void printLogs(String msg) {
+        sMessage = msg;
+        tvOut.setText(msg);
+    }
+
+    @Override
+    public void onStop(){
+        viewModel.stopMessaging(getContext());
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

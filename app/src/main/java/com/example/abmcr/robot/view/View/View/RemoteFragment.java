@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,7 +31,7 @@ import com.example.abmcr.robot.view.View.Model.Constants;
 import static android.content.Context.SENSOR_SERVICE;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class RemoteFragment extends Fragment {
@@ -39,6 +40,7 @@ public class RemoteFragment extends Fragment {
     private ImageView ivDanger;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
     private int gear;
+    private String curve;
 
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
@@ -67,9 +69,11 @@ public class RemoteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         bindViews(v);
         gear = constants.INIT_GEAR;
+        curve = "";
         return v;
     }
 
+    //Assigning all the visual components
     private void bindViews(View v){
 
         tvTitle = v.findViewById(R.id.tvTitle);
@@ -84,6 +88,7 @@ public class RemoteFragment extends Fragment {
         btnGearDown = v.findViewById(R.id.btnGearDown);
         btnGearUp = v.findViewById(R.id.btnGearUp);
         mLibrary = GestureLibraries.fromRawResource(getContext(), R.raw.gestures);
+
         if (!mLibrary.load()) {
             this.getActivity().finish();
         }
@@ -118,6 +123,7 @@ public class RemoteFragment extends Fragment {
 
         });
 
+        //About the gyroscope
         mSensorManager = (SensorManager)getContext().getSystemService(SENSOR_SERVICE);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
@@ -129,20 +135,35 @@ public class RemoteFragment extends Fragment {
         mGyroscopeEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                //Returns 0 when phone is horizontal and -10/10 when vertical
-                //Log.e("gyro",Float.toString(sensorEvent.values[1]));
 
-/*
-                if(sensorEvent.values[1] > -1 && sensorEvent.values[1] < 1){
-                    curve = "";
-                    pinta = false;
-                }else if(sensorEvent.values[1] < 4 && sensorEvent.values[1] > 0){
-                    curve = "";
-                    pinta = true;
-                    Log.e("gyro",Float.toString(sensorEvent.values[1]));
-
-                }//To be continued
-*/
+                //Returns 0 when phone is horizontal and -9.81/9.81 when vertical
+                //Depending on the rotation, we get some sort of directions
+                if(sensorEvent.values[1] > -2 && sensorEvent.values[1] < 2){
+                    if(!curve.equals("Recte")){
+                        curve = "Recte";
+                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                    }
+                }else if(sensorEvent.values[1] < -2 && sensorEvent.values[1] > -6){
+                    if(!curve.equals("Esquerra Suau")){
+                        curve = "Esquerra Suau";
+                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                    }
+                }else if(sensorEvent.values[1] < -6 && sensorEvent.values[1] > -10){
+                    if(!curve.equals("Esquerra Fort")){
+                        curve = "Esquerra Fort";
+                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                    }
+                }else if(sensorEvent.values[1] < 6 && sensorEvent.values[1] > 2){
+                    if(!curve.equals("Dreta Suau")){
+                        curve = "Dreta Suau";
+                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                    }
+                }else if(sensorEvent.values[1] < 10 && sensorEvent.values[1] > 6){
+                    if(!curve.equals("Dreta Fort")){
+                        curve = "Dreta Fort";
+                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
             @Override
@@ -151,6 +172,7 @@ public class RemoteFragment extends Fragment {
             }
         };
 
+        //Button Listeners
         btnThrottle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

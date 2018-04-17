@@ -14,10 +14,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.abmcr.robot.R;
+import com.example.abmcr.robot.view.View.Model.Constants;
 import com.example.abmcr.robot.view.View.View.MainActivity;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class SplashActivity extends AppCompatActivity {
@@ -38,8 +39,8 @@ public class SplashActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress",0,100);
-        animation.setDuration(1800);
+        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress",Constants.MIN_PROGRESS,Constants.MAX_PROGRESS);
+        animation.setDuration(Constants.ANIMATION_DURATION);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.start();
     }
@@ -57,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
 
-        }, 1000L);
+        }, Constants.SPLASH_DURATION);
     }
 }
 

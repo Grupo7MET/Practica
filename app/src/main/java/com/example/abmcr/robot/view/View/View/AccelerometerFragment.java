@@ -11,14 +11,12 @@ import android.widget.TextView;
 import com.example.abmcr.robot.R;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class AccelerometerFragment extends Fragment {
 
     private TextView tvTitle, tvX,tvY,tvZ, tvXValue,tvYValue,tvZValue;
-
-    //private MainViewModel viewModel;
 
     public static AccelerometerFragment newInstance(){
         return new AccelerometerFragment();
@@ -40,6 +38,7 @@ public class AccelerometerFragment extends Fragment {
         return v;
     }
 
+    //Assigning all the visual components
     private void bindViews(View v){
         tvTitle = v.findViewById(R.id.tvTitle);
         tvX = v.findViewById(R.id.tvX);

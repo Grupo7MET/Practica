@@ -15,12 +15,10 @@ import com.example.abmcr.robot.R;
 import com.example.abmcr.robot.view.View.Model.Constants;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class LabyrinthFragment extends Fragment{
-
-    //private MainViewModel viewModel;
 
     private Constants constants = new Constants();
 
@@ -53,12 +51,14 @@ public class LabyrinthFragment extends Fragment{
         return v;
     }
 
+    //Assigning all the visual components
     private void bindViews(View v){
         ivPlay = v.findViewById(R.id.ivPlay);
         assignCasillas(v);
         assignVerticalWalls(v);
         assignHorizontalWalls(v);
 
+        //Button Listeners
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +161,7 @@ public class LabyrinthFragment extends Fragment{
         ivHorizontalWalls [5][4] = v.findViewById(R.id.ph65);
     }
 
+    //Void able to paint a cell in some colors depending on the state
     public void paintCell(int row, int column, String state){
         switch (state){
             case "occupied":
@@ -173,16 +174,18 @@ public class LabyrinthFragment extends Fragment{
         }
     }
 
+    //Void able to paint vertical walls
     public void paintVerticalWall(int row, int column){
         ivVerticalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorWhite));
     }
 
+    //Void able to paint horizontal walls
     public void paintHorizontalWall(int row, int column){
         ivHorizontalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorWhite));
     }
 
+    //Example void showing we are able to paint
     private void playExamples(){
-        //Ejemplos de pintar
         paintCell(0,0,"free");
         paintHorizontalWall(3,3);
         paintVerticalWall(2,2);

@@ -12,14 +12,12 @@ import android.widget.Button;
 import com.example.abmcr.robot.R;
 
 /**
- * Created by abmcr on 21/03/2018.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class MainFragment extends Fragment {
 
     private Button button1, button2, button3, button4;
-
-    //private MainViewModel viewModel;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -41,6 +39,7 @@ public class MainFragment extends Fragment {
         return v;
     }
 
+    //Assigning all the visual components
     private void bindViews(View v) {
 
         button1 = v.findViewById(R.id.button1);
@@ -52,6 +51,7 @@ public class MainFragment extends Fragment {
         button4 = v.findViewById(R.id.button4);
         button4.setText(R.string.mmButton4);
 
+        //Button Listeners
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

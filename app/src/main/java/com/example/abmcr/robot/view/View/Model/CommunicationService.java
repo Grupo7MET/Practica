@@ -6,21 +6,25 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
+import static com.example.abmcr.robot.view.View.Model.CommunicationAsyncTask.initCommunications;
+import static com.example.abmcr.robot.view.View.Model.CommunicationAsyncTask.stopCommunications;
 
 /**
- * Created by Manel on 16/4/18.
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class CommunicationService extends Service {
 
-
+    public static Boolean communicationInProgress = false;
+    static DatagramSocket dgSocket;
     //service binder
     private IBinder binder = new CommunicationServiceBinder();
     //interface that communicates the service with the class that starts/stops the service
     //in this case the Repository
-    private CommunicationServiceInterface serviceCallbakcs;
+    static CommunicationServiceInterface serviceCallbakcs;
 
     @Nullable
     @Override
@@ -28,29 +32,36 @@ public class CommunicationService extends Service {
         return binder;
     }
 
-    /*
     @Override
     public void onCreate() {
         super.onCreate();
     }
-*/
+
     @Override
+    //Init communication service
     public int onStartCommand(Intent i, int flags, final int startId){
-        //TODO
+        try {
+            dgSocket = new DatagramSocket(Constants.MOBIL_PORT);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        initCommunications();
+        communicationInProgress = true;
         return Service.START_NOT_STICKY;
     }
 
     @Override
+    //destroy communication service
     public void onDestroy(){
-        //TODO
+        stopCommunications();
+        communicationInProgress = false;
         super.onDestroy();
     }
 
-    /*public static void sendDatagram(String datagram){
-        CommunicationTasks.datagramToSend = datagram;
-        DebugUtils.debug("Datagram:", datagram);
-        //serviceCallbakcs.txMessageValue(datagram);
-    }*/
+    //Prepare the data to send on the variable
+    public static void sendMessage(String data){
+        CommunicationAsyncTask.dataToSend = data;
+    }
 
     /*-------------------------- Service Binder -----------------------------*/
     public class CommunicationServiceBinder extends Binder {
@@ -66,6 +77,8 @@ public class CommunicationService extends Service {
         void rxMessage(String msg);
         void txMessage(String msg);
     }
-    /*--------------------------------------------------------------------------*/
-
+    /*------------------- Callback Interface to CommunicationAsyncTask ---------------------*/
+    public static void writeMessage(){
+        sendMessage("hi");
+    }
 }
