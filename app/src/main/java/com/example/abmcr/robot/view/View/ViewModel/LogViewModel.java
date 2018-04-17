@@ -10,6 +10,7 @@ import com.example.abmcr.robot.view.View.Model.Repository;
 
 
 /**
+ * ViewModel for the communication fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -29,7 +30,11 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
         repository = new Repository(this);
     }
 
-
+    /**
+     * Keeps the logs updated
+     * @param context
+     * @return
+     */
     public LiveData<String> printMessages (Context context){
 
         if(sLiveMessages == null) {
@@ -42,7 +47,8 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
             sMessages = Constants.LOG_TITLE;
             sLiveMessages.postValue(sMessages);
         }
-        //tell the repository to start the service
+
+        //tells the repository to start the service
         repository.startService(context);
         //return the observable variable
         return sLiveMessages;
@@ -54,6 +60,11 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
     }
 
     /*-------------------------- Repository Callbacks -----------------------------*/
+
+    /**
+     * Continuously refreshes both variables
+     * @param msg new received log
+     */
     @Override
     public void onIncomingMessage(String msg) {
         //post value to the view

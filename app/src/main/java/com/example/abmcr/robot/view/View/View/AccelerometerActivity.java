@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.abmcr.robot.R;
 
 /**
+ * Initializes the accelerometer fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 

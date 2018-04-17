@@ -1,13 +1,17 @@
 apply plugin: 'com.android.application'
 
+def versionMajor = 1
+def versionMinor = 1
+def versionPatch = 0
+
 android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.abmcr.robot"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 1000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

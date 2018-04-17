@@ -12,6 +12,7 @@ import com.example.abmcr.robot.R;
 
 
 /**
+ * Initializes the remote fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 

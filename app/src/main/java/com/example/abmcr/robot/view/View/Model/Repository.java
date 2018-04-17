@@ -9,6 +9,7 @@ import android.os.IBinder;
 import java.util.Calendar;
 
 /**
+ * Class that runs the services
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -64,15 +65,22 @@ public class Repository implements CommunicationService.CommunicationServiceInte
 
 
     /*----------------- Service interface callbakcs to Communication Service -------------------*/
+
+    /**
+     * pushes received message to the viewmodel
+     * @param msg received message
+     */
     @Override
     public void rxMessage(String msg) {
-        //push received message to the viewmodel
         String time = Calendar.getInstance().getTime().toString();
         repositoryCallback.onIncomingMessage(time + " Arduino says: " + msg);
     }
 
+    /**
+     * pushes transmitted message to the viewmodel
+     * @param msg transmitted message
+     */
     public void txMessage(String msg) {
-        //push transmitted message to the viewmodel
         String time = Calendar.getInstance().getTime().toString();
         repositoryCallback.onIncomingMessage(time + " Android says: " + msg);
     }

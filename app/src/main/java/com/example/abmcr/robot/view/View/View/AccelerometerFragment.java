@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.abmcr.robot.R;
 
 /**
+ * Class that creates the accelerometer view and assign all the visual components
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -52,5 +53,8 @@ public class AccelerometerFragment extends Fragment {
         tvX.setText(R.string.aX);
         tvY.setText(R.string.aY);
         tvZ.setText(R.string.aZ);
+        tvXValue.setText("3");
+        tvYValue.setText("3");
+        tvZValue.setText("3");
     }
 }

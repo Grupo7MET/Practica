@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Practica.iml" filepath="$PROJECT_DIR$/Practica.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Practica2/Practica.iml" filepath="$PROJECT_DIR$/../Practica2/Practica.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Practica2.iml" filepath="$PROJECT_DIR$/Practica2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Practica2.iml" filepath="$PROJECT_DIR$/.idea/Practica2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Practica2/app/app.iml" filepath="$PROJECT_DIR$/../Practica2/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>

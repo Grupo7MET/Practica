@@ -17,6 +17,7 @@ import com.example.abmcr.robot.view.View.ViewModel.LogViewModel;
 import java.util.ArrayList;
 
 /**
+ * Class that creates the communication view, assign all the visual components, manage the communication
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -66,7 +67,11 @@ public class CommunicationFragment extends Fragment {
         viewModel.printMessages(getContext()).observe(this, sObserverMessages);
     }
 
-    //Data is printed on screen through a TextView
+    /**
+     * Data is printed on screen through a TextView. It is a viewModel's callback
+     * @param msg the string we want to print on the screen
+     */
+
     public static void printLogs(String msg) {
         sMessage = msg;
         tvOut.setText(msg);

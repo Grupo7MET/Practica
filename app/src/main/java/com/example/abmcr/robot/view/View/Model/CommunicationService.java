@@ -13,6 +13,9 @@ import static com.example.abmcr.robot.view.View.Model.CommunicationAsyncTask.ini
 import static com.example.abmcr.robot.view.View.Model.CommunicationAsyncTask.stopCommunications;
 
 /**
+ * Class that allows the communication with the service
+ * Implements functions that start/stop the communication, prepare data to send and
+ * allow to push values to the repository
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -20,9 +23,9 @@ public class CommunicationService extends Service {
 
     public static Boolean communicationInProgress = false;
     static DatagramSocket dgSocket;
-    //service binder
+    //Service binder
     private IBinder binder = new CommunicationServiceBinder();
-    //interface that communicates the service with the class that starts/stops the service
+    //Interface that communicates the service with the class that starts/stops the service
     //in this case the Repository
     static CommunicationServiceInterface serviceCallbakcs;
 
@@ -51,14 +54,19 @@ public class CommunicationService extends Service {
     }
 
     @Override
-    //destroy communication service
+    //Destroy communication service
     public void onDestroy(){
         stopCommunications();
         communicationInProgress = false;
         super.onDestroy();
     }
 
-    //Prepare the data to send on the variables
+    /**
+     * Prepare the data to send on the variables
+     * @param data1 first kind of message
+     * @param data2 second kind of message
+     * @param data3 third kind of message
+     */
     public static void sendMessage(String data1, String data2, String data3){
         CommunicationAsyncTask.dataToSend1 = data1;
         CommunicationAsyncTask.dataToSend2 = data2;
@@ -66,9 +74,12 @@ public class CommunicationService extends Service {
     }
 
     /*-------------------------- Service Binder -----------------------------*/
+
+    /**
+     * Set the interface to allow to push values from service to the repository
+     */
     public class CommunicationServiceBinder extends Binder {
 
-        //set the interface to allow to push values from service to the repository
         public void setInterface(CommunicationService.CommunicationServiceInterface callback){
             serviceCallbakcs = callback;
         }
@@ -80,6 +91,10 @@ public class CommunicationService extends Service {
         void txMessage(String msg);
     }
     /*------------------- Callback Interface to CommunicationAsyncTask ---------------------*/
+
+    /**
+     * strings for different kind of message are charged
+     */
     public static void writeMessage(){
         //TODO change kind of message to send
         sendMessage("hi1", "hi2", "hi3");

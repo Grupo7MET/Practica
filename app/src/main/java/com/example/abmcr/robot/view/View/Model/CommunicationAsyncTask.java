@@ -16,6 +16,8 @@ import static com.example.abmcr.robot.view.View.Model.CommunicationService.write
 import static java.net.InetAddress.getByName;
 
 /**
+ * Class that executes an AsyncTask to send and receive data
+ * Implements functions to initialize and stop the connection
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -27,19 +29,24 @@ public class CommunicationAsyncTask {
 
     private static boolean txIsOn,rxIsOn;
 
-    private static TransmittingTask txTask;
-    private static ReceivingTask rxTask;
+    private static TxTask txTask;
+    private static RxTask rxTask;
+
 
     static void initCommunications() {
 
         txIsOn = true;
         rxIsOn = true;
 
-        txTask = new TransmittingTask();
+        txTask = new TxTask();
         txTask.execute();
-        rxTask = new ReceivingTask();
+        rxTask = new RxTask();
         rxTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
+
+    /**
+     * Used to stop the communication. Tasks are cancelled and variables are reassigned
+     */
 
     static void stopCommunications() {
 
@@ -60,8 +67,12 @@ public class CommunicationAsyncTask {
         dataToSend3 = null;
     }
 
-    //When receiving data...
-    private static class ReceivingTask extends AsyncTask<Void, Void, Void> {
+    /**
+     * Executes when data is received.
+     * A message is received, classified and pushed to the viewModel (doInBackground)
+     * It is recalled to keep receiving messages (onPostExecute)
+     */
+    private static class RxTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -119,14 +130,18 @@ public class CommunicationAsyncTask {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (rxIsOn) {
-                rxTask = new ReceivingTask();
+                rxTask = new RxTask();
                 rxTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     }
 
-    //When transmitting data...
-    private static class TransmittingTask extends AsyncTask<Void, Void, Void> {
+    /**
+     * Is executed when transmitting data
+     * Sends through the socket 3 types of messages (doInBackground)
+     * It is recalled every 5 seconds (onPostExecute)
+     */
+    private static class TxTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -138,7 +153,7 @@ public class CommunicationAsyncTask {
                         byte[] msg = dataToSend1.getBytes();
                         DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
                         DatagramSocket dataSocket = new DatagramSocket();
-                        //Message is sent
+                        //Messages are sent
                         dataSocket.send(dataPkt);
                         dataSocket.send(dataPkt);
                         dataSocket.send(dataPkt);
@@ -193,7 +208,7 @@ public class CommunicationAsyncTask {
                     @Override
                     public void run() {
 
-                        txTask = new TransmittingTask();
+                        txTask = new TxTask();
                         txTask.execute();
                     }
                 };

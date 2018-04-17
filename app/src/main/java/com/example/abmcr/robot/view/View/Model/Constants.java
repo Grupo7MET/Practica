@@ -1,6 +1,7 @@
 package com.example.abmcr.robot.view.View.Model;
 
 /**
+ * Class that declares the constants
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 

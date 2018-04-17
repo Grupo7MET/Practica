@@ -18,6 +18,7 @@ import com.example.abmcr.robot.view.View.Model.Constants;
 import com.example.abmcr.robot.view.View.View.MainActivity;
 
 /**
+ * Class that creates the view and keeps it visible for splash duration
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
@@ -45,6 +46,9 @@ public class SplashActivity extends AppCompatActivity {
         animation.start();
     }
 
+    /**
+     * Keeps the splashScreen visible until splash duration is finished
+     */
     protected void onStart(){
         super.onStart();
 

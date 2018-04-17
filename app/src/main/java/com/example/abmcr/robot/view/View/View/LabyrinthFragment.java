@@ -15,6 +15,7 @@ import com.example.abmcr.robot.R;
 import com.example.abmcr.robot.view.View.Model.Constants;
 
 /**
+ * Class that creates the labyrinth view, assign all the visual components and manage to paint the grid
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 

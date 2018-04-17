@@ -31,6 +31,8 @@ import com.example.abmcr.robot.view.View.Model.Constants;
 import static android.content.Context.SENSOR_SERVICE;
 
 /**
+ * Class that creates the view and assign all the visual components.
+ * Create the button listeners, manage the pattern detection and the gyroscope
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 

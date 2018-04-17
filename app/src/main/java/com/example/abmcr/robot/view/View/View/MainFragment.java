@@ -12,6 +12,7 @@ import android.widget.Button;
 import com.example.abmcr.robot.R;
 
 /**
+ * Class that creates the view and assign all the visual components and create the button listeners
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
