@@ -50,6 +50,8 @@ public class CommunicationService extends Service {
         }
         initCommunications();
         communicationInProgress = true;
+        //Now we initialize the value for the messages to send
+        writeMessage();
         return Service.START_NOT_STICKY;
     }
 

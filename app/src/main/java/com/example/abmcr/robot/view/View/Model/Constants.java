@@ -29,7 +29,7 @@ public class Constants {
     public static final int INPUT_BYTES = 5000;
     public static final int TIME_BETWEEN_MESSAGES = 5000;
     public static final String MOBIL_IP = "192.168.1.110";
-    public static final String ARDUINO_IP = "192.168.1.139"; //PC
+    public static final String ARDUINO_IP = "192.168.1.140"; //PC
     public static final int MOBIL_PORT = 10502;
     public static final int ARDUINO_PORT = 10501; //PC
 
