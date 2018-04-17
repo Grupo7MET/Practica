@@ -58,9 +58,11 @@ public class CommunicationService extends Service {
         super.onDestroy();
     }
 
-    //Prepare the data to send on the variable
-    public static void sendMessage(String data){
-        CommunicationAsyncTask.dataToSend = data;
+    //Prepare the data to send on the variables
+    public static void sendMessage(String data1, String data2, String data3){
+        CommunicationAsyncTask.dataToSend1 = data1;
+        CommunicationAsyncTask.dataToSend2 = data2;
+        CommunicationAsyncTask.dataToSend3 = data3;
     }
 
     /*-------------------------- Service Binder -----------------------------*/
@@ -79,6 +81,7 @@ public class CommunicationService extends Service {
     }
     /*------------------- Callback Interface to CommunicationAsyncTask ---------------------*/
     public static void writeMessage(){
-        sendMessage("hi");
+        //TODO change kind of message to send
+        sendMessage("hi1", "hi2", "hi3");
     }
 }

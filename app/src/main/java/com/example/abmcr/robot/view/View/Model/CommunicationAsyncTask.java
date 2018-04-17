@@ -21,7 +21,9 @@ import static java.net.InetAddress.getByName;
 
 public class CommunicationAsyncTask {
 
-    static String dataToSend;
+    static String dataToSend1;
+    static String dataToSend2;
+    static String dataToSend3;
 
     private static boolean txIsOn,rxIsOn;
 
@@ -53,7 +55,9 @@ public class CommunicationAsyncTask {
         //All variables stop communications
         txIsOn = false;
         rxIsOn = false;
-        dataToSend = null;
+        dataToSend1 = null;
+        dataToSend2 = null;
+        dataToSend3 = null;
     }
 
     //When receiving data...
@@ -82,10 +86,31 @@ public class CommunicationAsyncTask {
                 }
                 final String msg = new String(dataPkt.getData()).trim();
                 if (msg.length() > 0) {
+                    //identify the message received
+                    switch (msg){
+                        //Case of message 1
+                        case "ack1":
+
+                            //push the message to ViewModel
+                            serviceCallbakcs.rxMessage(msg);
+                            break;
+                        //Case of message 2
+                        case "ack2":
+
+                            //push the message to ViewModel
+                            serviceCallbakcs.rxMessage(msg);
+                            break;
+                        //Case of message 3
+                        case "ack3":
+
+                            //push the message to ViewModel
+                            serviceCallbakcs.rxMessage(msg);
+                            break;
+                    }
+
                     //Charge message to variable dataToSend
                     writeMessage();
-                    //push the message to ViewModel
-                    serviceCallbakcs.rxMessage(msg);
+
                 }
             }
             return null;
@@ -108,16 +133,51 @@ public class CommunicationAsyncTask {
             if (!isCancelled() && txIsOn){
 
                 try {
-                    if (dataToSend != null) {
-                        byte[] msg = dataToSend.getBytes();
+                    //Send kind of Message 1
+                    if (dataToSend1 != null) {
+                        byte[] msg = dataToSend1.getBytes();
                         DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
                         DatagramSocket dataSocket = new DatagramSocket();
+                        //Message is sent
+                        dataSocket.send(dataPkt);
+                        dataSocket.send(dataPkt);
                         dataSocket.send(dataPkt);
                         dataSocket.close();
                         if (serviceCallbakcs != null) {
-                            serviceCallbakcs.txMessage(dataToSend);
+                            serviceCallbakcs.txMessage(dataToSend1);
                         }
                     }
+
+                    //Send kind of Message 2
+                    if (dataToSend2 != null) {
+                        byte[] msg = dataToSend2.getBytes();
+                        DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
+                        DatagramSocket dataSocket = new DatagramSocket();
+                        //Message is sent
+                        dataSocket.send(dataPkt);
+                        dataSocket.send(dataPkt);
+                        dataSocket.send(dataPkt);
+                        dataSocket.close();
+                        if (serviceCallbakcs != null) {
+                            serviceCallbakcs.txMessage(dataToSend2);
+                        }
+                    }
+
+                    //Send kind of Message 3
+                    if (dataToSend3 != null) {
+                        byte[] msg = dataToSend3.getBytes();
+                        DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
+                        DatagramSocket dataSocket = new DatagramSocket();
+                        //Message is sent
+                        dataSocket.send(dataPkt);
+                        dataSocket.send(dataPkt);
+                        dataSocket.send(dataPkt);
+                        dataSocket.close();
+                        if (serviceCallbakcs != null) {
+                            serviceCallbakcs.txMessage(dataToSend3);
+                        }
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
