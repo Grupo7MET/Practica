@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,5 +56,22 @@ public class AccelerometerFragment extends Fragment {
         tvXValue.setText("3");
         tvYValue.setText("3");
         tvZValue.setText("3");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        //viewModel.stopMessaging(getContext());
+        getActivity().finish();
+        super.onStop();
     }
 }

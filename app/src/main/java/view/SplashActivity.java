@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -14,8 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.abmcr.robot.R;
-import com.example.abmcr.robot.view.View.Model.Constants;
-import com.example.abmcr.robot.view.View.View.MainActivity;
+import model.Constants;
 
 /**
  * Class that creates the view and keeps it visible for splash duration

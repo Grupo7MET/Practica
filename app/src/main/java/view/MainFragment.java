@@ -1,5 +1,6 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.example.abmcr.robot.R;
 public class MainFragment extends Fragment {
 
     private Button button1, button2, button3, button4;
+
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -57,6 +59,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), RemoteActivity.class);
+                intent.putExtra("repository", 2);
                 startActivity(intent);
             }
         });
@@ -87,4 +90,5 @@ public class MainFragment extends Fragment {
             }
         });
     }
+
 }

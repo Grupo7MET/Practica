@@ -1,4 +1,4 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.abmcr.robot.R;
-import com.example.abmcr.robot.view.View.ViewModel.LogViewModel;
+import viewModel.LogViewModel;
 
 import java.util.ArrayList;
 
@@ -80,6 +80,7 @@ public class CommunicationFragment extends Fragment {
     @Override
     public void onStop(){
         viewModel.stopMessaging(getContext());
+        getActivity().finish();
         super.onStop();
     }
 

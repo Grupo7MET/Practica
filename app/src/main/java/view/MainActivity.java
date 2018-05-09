@@ -1,42 +1,47 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.abmcr.robot.R;
 
 /**
- * Initializes the accelerometer fragment
+ * Initializes the main fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
-public class AccelerometerActivity extends AppCompatActivity {
-    private String ACCELEROMETER_FRAGMENT = "ACCELEROMETER_FRAGMENT";
+public class MainActivity extends AppCompatActivity {
+
+    private String MAIN_FRAGMENT = "MAIN_FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accelerometer);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         initFragment();
     }
 
     private void initFragment(){
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(ACCELEROMETER_FRAGMENT);
+        Fragment fragment = manager.findFragmentByTag(MAIN_FRAGMENT);
         if(fragment == null){
-            fragment = AccelerometerFragment.newInstance();
+            fragment = MainFragment.newInstance();
         }
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-        transaction.replace(R.id.activity_main_container,fragment,ACCELEROMETER_FRAGMENT);
+        transaction.replace(R.id.activity_main_container,fragment,MAIN_FRAGMENT);
         transaction.commit();
 
     }
 }
+

@@ -1,6 +1,7 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
 import android.graphics.Color;
+import android.hardware.SensorManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.abmcr.robot.R;
 
-import com.example.abmcr.robot.view.View.Model.Constants;
+import model.Constants;
 
 /**
  * Class that creates the labyrinth view, assign all the visual components and manage to paint the grid
@@ -177,7 +178,7 @@ public class LabyrinthFragment extends Fragment{
 
     //Void able to paint vertical walls
     public void paintVerticalWall(int row, int column){
-        ivVerticalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        ivVerticalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorBlack));
     }
 
     //Void able to paint horizontal walls
@@ -190,5 +191,23 @@ public class LabyrinthFragment extends Fragment{
         paintCell(0,0,"free");
         paintHorizontalWall(3,3);
         paintVerticalWall(2,2);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        //viewModel.stopMessaging(getContext());
+        getActivity().finish();
+        super.onStop();
     }
 }

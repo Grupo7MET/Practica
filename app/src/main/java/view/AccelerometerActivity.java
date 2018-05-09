@@ -1,5 +1,4 @@
-package com.example.abmcr.robot.view.View.View;
-
+package view;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -10,40 +9,34 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.abmcr.robot.R;
 
-
 /**
- * Initializes the remote fragment
+ * Initializes the accelerometer fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
-public class RemoteActivity extends AppCompatActivity {
-
-    private String REMOTE_FRAGMENT = "REMOTE_FRAGMENT";
+public class AccelerometerActivity extends AppCompatActivity {
+    private String ACCELEROMETER_FRAGMENT = "ACCELEROMETER_FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remote);
+        setContentView(R.layout.activity_accelerometer);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         initFragment();
     }
 
-    private void initFragment() {
+    private void initFragment(){
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(REMOTE_FRAGMENT);
-        if (fragment == null) {
-            fragment = RemoteFragment.newInstance();
+        Fragment fragment = manager.findFragmentByTag(ACCELEROMETER_FRAGMENT);
+        if(fragment == null){
+            fragment = AccelerometerFragment.newInstance();
         }
 
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        transaction.replace(R.id.activity_main_container, fragment, REMOTE_FRAGMENT);
+        transaction.setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        transaction.replace(R.id.activity_main_container,fragment,ACCELEROMETER_FRAGMENT);
         transaction.commit();
 
     }
 }
-
-
-
-

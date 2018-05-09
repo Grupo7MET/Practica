@@ -57,7 +57,6 @@
             android:id="@+id/tvXValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:text="XX"
             android:textSize="30dp"
             android:layout_weight="1"/>
 
@@ -65,7 +64,6 @@
             android:id="@+id/tvYValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:text="YY"
             android:textSize="30dp"
             android:layout_weight="1"/>
 
@@ -73,7 +71,6 @@
             android:id="@+id/tvZValue"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:text="ZZ"
             android:textSize="30dp"
             android:layout_weight="1"/>
 

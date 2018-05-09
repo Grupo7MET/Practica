@@ -1,5 +1,21 @@
-package com.example.abmcr.robot.view.View.View;
+package view;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.abmcr.robot.R;
+import viewModel.LogViewModel;
+
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -11,8 +27,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,7 +42,9 @@ import com.example.abmcr.robot.R;
 
 import java.util.ArrayList;
 
-import com.example.abmcr.robot.view.View.Model.Constants;
+import model.Constants;
+import viewModel.LogViewModel;
+import viewModel.RemoteViewModel;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -38,11 +56,14 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class RemoteFragment extends Fragment {
 
-    private TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
+    private RemoteViewModel viewModel;
+
+    private static TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
     private ImageView ivDanger;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
     private int gear;
     private String curve;
+    private Observer<String> sDegrees;
 
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
@@ -69,6 +90,7 @@ public class RemoteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
+        initViewModel();
         bindViews(v);
         gear = constants.INIT_GEAR;
         curve = "";
@@ -122,7 +144,6 @@ public class RemoteFragment extends Fragment {
                     }
                 }
             }
-
         });
 
         //About the gyroscope
@@ -233,6 +254,23 @@ public class RemoteFragment extends Fragment {
 
     }
 
+    //Assign ViewModel to this fragment & the observer variable
+    private void initViewModel(){
+
+        viewModel = ViewModelProviders.of(this).get(RemoteViewModel.class);
+        sDegrees = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                printTemp(msg);
+            }
+        };
+        viewModel.printMessages(getContext()).observe(this, sDegrees);
+    }
+
+    public static void printTemp(String msg) {
+        tvTemp.setText(msg);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -243,5 +281,12 @@ public class RemoteFragment extends Fragment {
     public void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(mGyroscopeEventListener);
+    }
+
+    @Override
+    public void onStop() {
+        viewModel.stopMessaging(getContext());
+        getActivity().finish();
+        super.onStop();
     }
 }
