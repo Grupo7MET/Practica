@@ -17,6 +17,10 @@ public class Constants {
 
     //Remote Mode
     public static final int INIT_GEAR = 0;
+    public static final int VELOCITY_LOW = 30;
+    public static final int VELOCITY_MEDIUM = 70;
+    public static final int VELOCITY_HIGH = 100;
+
 
     //Labyrinth Mode
     public static final int LABYRINTH_NROWS = 5;

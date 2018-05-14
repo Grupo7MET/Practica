@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
+import android.util.Log;
 
 import model.Constants;
 import model.Repository;
@@ -21,14 +22,17 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
 
     //observable String variable
     private MutableLiveData<String> sLiveTemperature;
+    private MutableLiveData<Boolean> bLiveManual; //1 if manual, 0 if auto
+    private boolean currentManual;
 
     private static String sMessages;
+
+    private static String[] subStrings;
 
 
     //Constructor
     public RemoteViewModel(){
         repository = new Repository(this);
-
     }
 
     /**
@@ -36,22 +40,45 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
      * @param context
      * @return
      */
-    public LiveData<String> printMessages (Context context){
+
+    /*public void startCommunication(Context context){
+        //tells the repository to start the service
+
+    }*/
+
+    public LiveData<String> refreshTemperature (Context context){
 
         if(sLiveTemperature == null) {
             //init observable variable
             sLiveTemperature = new MutableLiveData<>();
+            sLiveTemperature.setValue("Temperature");
         }
 
-        //tells the repository to start the service
         repository.startService(context);
-        //return the observable variable
+        //returns the observable variable
         return sLiveTemperature;
+    }
+
+    public LiveData<Boolean> refreshManual (Context context){
+
+        if(bLiveManual == null) {
+            //init observable variable
+            bLiveManual = new MutableLiveData<>();
+            currentManual = true;
+            bLiveManual.setValue(currentManual);
+        }
+
+        //returns the observable variable
+        return bLiveManual;
     }
 
     public void stopMessaging(Context context){
         //tell the repository to stop the service
         repository.stopService(context);
+    }
+
+    public void sendMessage(String message){
+        repository.sendMessage(message);
     }
 
     /*-------------------------- Repository Callbacks -----------------------------*/
@@ -61,11 +88,31 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
      * @param msg new received log
      */
     @Override
-    public void onIncomingMessage(String msg) {
-        //Assign value for the temperature
-        sLiveTemperature.postValue(msg);
+    public void onIncomingMessage (String msg) {
+        //Assign value for the temperature only if it is for me
+        subStrings = msg.split("_");
 
-        //TODO aqui tratamos la string (el switch)
+        Log.e("cambio","caca");
+        if(subStrings.length > 1) {
+
+            Log.e("cambio","pene");
+            if (subStrings[0].equals("rem")) {
+                switch (subStrings[1]) {
+                    case "temp":
+                        Log.e("cambio","hola");
+                        sLiveTemperature.postValue(subStrings[2]);
+                        break;
+
+                    case "manAuto":
+                        Log.e("cambio","hola");
+                        currentManual = !currentManual;
+                        bLiveManual.postValue(currentManual);
+
+                        break;
+
+                }
+            }
+        }
     }
 
     @Override

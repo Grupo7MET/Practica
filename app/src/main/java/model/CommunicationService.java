@@ -50,8 +50,6 @@ public class CommunicationService extends Service {
         }
         initCommunications();
         communicationInProgress = true;
-        //Now we initialize the value for the messages to send
-        writeMessage();
         return Service.START_NOT_STICKY;
     }
 
@@ -65,14 +63,16 @@ public class CommunicationService extends Service {
 
     /**
      * Prepare the data to send on the variables
-     * @param data1 first kind of message
-     * @param data2 second kind of message
-     * @param data3 third kind of message
+     * @param msg is the message to send
      */
-    public static void sendMessage(String data1, String data2, String data3){
-        CommunicationAsyncTask.dataToSend1 = data1;
-        CommunicationAsyncTask.dataToSend2 = data2;
-        CommunicationAsyncTask.dataToSend3 = data3;
+    public static void sendMessage(String msg){
+        CommunicationAsyncTask.dataToSend = msg;
+        CommunicationAsyncTask.sendMessageUDP();
+    }
+
+    public static void writeMessage(String msg){
+        //TODO change kind of message to send
+        sendMessage(msg);
     }
 
     /*-------------------------- Service Binder -----------------------------*/
@@ -81,11 +81,9 @@ public class CommunicationService extends Service {
      * Set the interface to allow to push values from service to the repository
      */
     public class CommunicationServiceBinder extends Binder {
-
         public void setInterface(CommunicationService.CommunicationServiceInterface callback){
             serviceCallbacks = callback;
         }
-
     }
     /*--------------------------------------------------------------------------*/
     /*-------------------------- Service Interface -----------------------------*/
@@ -95,11 +93,4 @@ public class CommunicationService extends Service {
     }
     /*------------------- Callback Interface to CommunicationAsyncTask ---------------------*/
 
-    /**
-     * strings for different kind of message are charged
-     */
-    public static void writeMessage(){
-        //TODO change kind of message to send
-        sendMessage("hi1", "hi2", "hi3");
-    }
 }

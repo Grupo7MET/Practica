@@ -9,6 +9,8 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import static model.CommunicationService.writeMessage;
+
 /**
  * Class that runs the services
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
@@ -21,8 +23,6 @@ public class Repository implements CommunicationService.CommunicationServiceInte
     private static RepositoryCallbacks repositoryCallback;
 
     private static boolean serviceIsBound;
-
-    private static String[] subStrings;
 
     //Constructor
     public Repository(RepositoryCallbacks callbacks){
@@ -60,7 +60,7 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName name) {
+        public void onServiceDisconnected (ComponentName name) {
             serviceIsBound = false;
         }
     };
@@ -74,44 +74,21 @@ public class Repository implements CommunicationService.CommunicationServiceInte
      */
     @Override
     public void rxMessage(String msg) {
-
         repositoryCallback.onIncomingMessage(msg);
-        /*
-        subStrings = msg.split("_");
-
-        //TODO aixo va a cada un dels viewmodels
-        //First we check the protocol with just one _
-        if(subStrings.length == 2) {
-
-            //Sends the message to the correct Viewmodel
-            switch (subStrings[0]) {
-                case "acc":
-
-                    break;
-
-                case "rem":
-                    //repositoryCallbackRemote.onIncomingTemperature(subStrings[1]);
-                    break;
-
-                case "lab":
-
-                    break;
-
-                case "log":
-                    //String time = Calendar.getInstance().getTime().toString();
-                    //repositoryCallbackLog.onIncomingMessage(time + " Arduino says: " + subStrings[1]);
-                    break;
-            }
-        }*/
     }
 
+
     /**
-     * pushes transmitted message to the viewmodel
+     * pushes transmitted message to the Logviewmodel
      * @param msg transmitted message
      */
     public void txMessage(String msg) {
         String time = Calendar.getInstance().getTime().toString();
         repositoryCallback.onIncomingMessage(time + " Android says: " + msg);
+    }
+
+    public void sendMessage(String msg){
+        writeMessage(msg);
     }
 
     /*-------------------- Repository Interface to ViewModel ------------------------*/

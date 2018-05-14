@@ -61,9 +61,11 @@ public class RemoteFragment extends Fragment {
     private static TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
     private ImageView ivDanger;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
-    private int gear;
+    //private int gear;
     private String curve;
-    private Observer<String> sDegrees;
+    private Observer<String> sDegrees; //a string with the degrees received from the Arduino
+    private Observer<Boolean> manual; //says which button (man/auto) is selected
+    private Observer<Integer> gear; //says which is the current gear
 
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
@@ -92,7 +94,7 @@ public class RemoteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         initViewModel();
         bindViews(v);
-        gear = constants.INIT_GEAR;
+        //gear = constants.INIT_GEAR; **********************
         curve = "";
         return v;
     }
@@ -112,6 +114,9 @@ public class RemoteFragment extends Fragment {
         btnGearDown = v.findViewById(R.id.btnGearDown);
         btnGearUp = v.findViewById(R.id.btnGearUp);
         mLibrary = GestureLibraries.fromRawResource(getContext(), R.raw.gestures);
+
+        btnAuto.setEnabled(true);
+        btnManual.setEnabled(false);
 
         if (!mLibrary.load()) {
             this.getActivity().finish();
@@ -201,9 +206,11 @@ public class RemoteFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
+                    viewModel.sendMessage("Stop");
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Toast.makeText(getContext(), "Throttle", Toast.LENGTH_SHORT).show();
+                    viewModel.sendMessage("Throttle");
                 }
                 return false;
             }
@@ -212,8 +219,8 @@ public class RemoteFragment extends Fragment {
         btnAuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAuto.setEnabled(false);
-                btnManual.setEnabled(true);
+                //btnAuto.setEnabled(false);
+                //btnManual.setEnabled(true);
                 Toast.makeText(getContext(), "Auto mode", Toast.LENGTH_SHORT).show();
             }
         });
@@ -221,8 +228,8 @@ public class RemoteFragment extends Fragment {
         btnManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAuto.setEnabled(true);
-                btnManual.setEnabled(false);
+                //btnAuto.setEnabled(true);
+                //btnManual.setEnabled(false);
                 Toast.makeText(getContext(), "Manual mode", Toast.LENGTH_SHORT).show();
             }
         });
@@ -258,17 +265,23 @@ public class RemoteFragment extends Fragment {
     private void initViewModel(){
 
         viewModel = ViewModelProviders.of(this).get(RemoteViewModel.class);
+
         sDegrees = new Observer<String>() {
             @Override
             public void onChanged(@Nullable String msg) {
-                printTemp(msg);
+                tvTemp.setText(msg);
             }
         };
-        viewModel.printMessages(getContext()).observe(this, sDegrees);
-    }
+        viewModel.refreshTemperature(getContext()).observe(this, sDegrees);
 
-    public static void printTemp(String msg) {
-        tvTemp.setText(msg);
+        manual = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean msg) {
+                btnAuto.setEnabled(!msg);
+                btnManual.setEnabled(msg);
+            }
+        };
+        viewModel.refreshManual(getContext()).observe(this, manual);
     }
 
     @Override

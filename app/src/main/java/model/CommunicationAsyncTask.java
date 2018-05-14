@@ -22,7 +22,7 @@ import static model.CommunicationService.serviceCallbacks;
 
 public class CommunicationAsyncTask {
 
-    static String dataToSend1;
+    static String dataToSend;
     static String dataToSend2;
     static String dataToSend3;
 
@@ -43,11 +43,8 @@ public class CommunicationAsyncTask {
 
     static void initCommunications() {
 
-        txIsOn = true;
         rxIsOn = true;
 
-        txTask = new TxTask();
-        txTask.execute();
         if(rxTask == null) {
             rxTask = new Thread() {
                 @Override
@@ -82,8 +79,12 @@ public class CommunicationAsyncTask {
             };
         }
         rxTask.start();
-        /*rxTask = new RxTask();
-        rxTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
+    }
+
+    static void sendMessageUDP(){
+        txIsOn = true;
+        txTask = new TxTask();
+        txTask.execute();
     }
 
     /**
@@ -103,26 +104,25 @@ public class CommunicationAsyncTask {
         //All variables stop communications
         txIsOn = false;
         rxIsOn = false;
-        dataToSend1 = null;
+        dataToSend = null;
         dataToSend2 = null;
         dataToSend3 = null;
     }
 
     /**
      * Is executed when transmitting data
-     * Sends through the socket 3 types of messages (doInBackground)
-     * It is recalled every 5 seconds (onPostExecute)
+     * Sends through the socket the specified message (doInBackground)
      */
     private static class TxTask extends AsyncTask<Void, Void, Void> {
+
 
         @Override
         protected Void doInBackground(Void... voids) {
             if (!isCancelled() && txIsOn){
-
                 try {
                     //Send kind of Message 1
-                    if (dataToSend1 != null) {
-                        byte[] msg = dataToSend1.getBytes();
+                    if (dataToSend != null) {
+                        byte[] msg = dataToSend.getBytes();
                         DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
                         DatagramSocket dataSocket = new DatagramSocket();
                         //Messages are sent
@@ -130,35 +130,7 @@ public class CommunicationAsyncTask {
                         dataSocket.close();
                         if (serviceCallbacks != null) {
                             //msg is sent to ViewModel
-                            serviceCallbacks.txMessage(dataToSend1);
-                        }
-                    }
-
-                    //Send kind of Message 2
-                    if (dataToSend2 != null) {
-                        byte[] msg = dataToSend2.getBytes();
-                        DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
-                        DatagramSocket dataSocket = new DatagramSocket();
-                        //Message is sent
-                        dataSocket.send(dataPkt);
-                        dataSocket.close();
-                        if (serviceCallbacks != null) {
-                            //msg is sent to ViewModel
-                            serviceCallbacks.txMessage(dataToSend2);
-                        }
-                    }
-
-                    //Send kind of Message 3
-                    if (dataToSend3 != null) {
-                        byte[] msg = dataToSend3.getBytes();
-                        DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
-                        DatagramSocket dataSocket = new DatagramSocket();
-                        //Message is sent
-                        dataSocket.send(dataPkt);
-                        dataSocket.close();
-                        if (serviceCallbacks != null) {
-                            //msg is sent to ViewModel
-                            serviceCallbacks.txMessage(dataToSend3);
+                            serviceCallbacks.txMessage(dataToSend);
                         }
                     }
 
@@ -166,11 +138,17 @@ public class CommunicationAsyncTask {
                     e.printStackTrace();
                 }
             }
+            //We close the communication
+            if (!txTask.isCancelled()) {
+                txTask.cancel(false);
+            }
+            txIsOn = false;
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            /*
             if (txIsOn) {
                 //Send a message every 5 seconds (as specified on the statement)
                 TimerTask timerTask = new TimerTask() {
@@ -183,7 +161,7 @@ public class CommunicationAsyncTask {
                 };
                 Timer timer = new Timer();
                 timer.schedule(timerTask, Constants.TIME_BETWEEN_MESSAGES);
-            }
+            }*/
         }
 
     }
