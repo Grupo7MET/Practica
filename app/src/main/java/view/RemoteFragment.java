@@ -6,16 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.abmcr.robot.R;
-import viewModel.LogViewModel;
-
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -25,28 +21,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.abmcr.robot.R;
-
 import java.util.ArrayList;
-
 import model.Constants;
-import viewModel.LogViewModel;
 import viewModel.RemoteViewModel;
-
 import static android.content.Context.SENSOR_SERVICE;
+import static java.lang.Math.abs;
 
 /**
  * Class that creates the view and assign all the visual components.
@@ -61,19 +44,25 @@ public class RemoteFragment extends Fragment {
     private static TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
     private ImageView ivDanger;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
-    //private int gear;
+    private int gear;
     private String curve;
+    private boolean manual;
+    private float readValue;
+    /**
+     * danger represents in 3 bits the possible dangers
+     * Weights:
+     * 1 for rigºht bumper
+     * 2 for left bumper
+     * 4 for Ultrasound
+     * The sum of them is the result for this number
+     */
+    private Observer<Integer> danger;
     private Observer<String> sDegrees; //a string with the degrees received from the Arduino
-    private Observer<Boolean> manual; //says which button (man/auto) is selected
-    private Observer<Integer> gear; //says which is the current gear
-
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
-
     private SensorManager mSensorManager;
     private Sensor mGyroscope;
     private SensorEventListener mGyroscopeEventListener;
-
     private Constants constants = new Constants();
 
     public static RemoteFragment newInstance(){
@@ -94,8 +83,9 @@ public class RemoteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         initViewModel();
         bindViews(v);
-        //gear = constants.INIT_GEAR; **********************
+        gear = constants.GEAR_INIT;
         curve = "";
+        viewModel.sendMessage(constants.MODE_REMOTE);
         return v;
     }
 
@@ -143,13 +133,14 @@ public class RemoteFragment extends Fragment {
                 if (predictions.size() > 0) {
                     Prediction prediction = predictions.get(0);
                     // We want at least some confidence in the result
-                    if (prediction.score > 1.0) {
+                    if (prediction.score > constants.PREDICTOR_MIN_SCORE) {
                         // Show the spell
                         Toast.makeText(getContext(), prediction.name, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
+
 
         //About the gyroscope
         mSensorManager = (SensorManager)getContext().getSystemService(SENSOR_SERVICE);
@@ -164,32 +155,37 @@ public class RemoteFragment extends Fragment {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
 
-                //Returns 0 when phone is horizontal and -9.81/9.81 when vertical
-                //Depending on the rotation, we get some sort of directions
-                if(sensorEvent.values[1] > -2 && sensorEvent.values[1] < 2){
-                    if(!curve.equals("Recte")){
-                        curve = "Recte";
-                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
-                    }
-                }else if(sensorEvent.values[1] < -2 && sensorEvent.values[1] > -6){
-                    if(!curve.equals("Esquerra Suau")){
-                        curve = "Esquerra Suau";
-                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
-                    }
-                }else if(sensorEvent.values[1] < -6 && sensorEvent.values[1] > -10){
-                    if(!curve.equals("Esquerra Fort")){
-                        curve = "Esquerra Fort";
-                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
-                    }
-                }else if(sensorEvent.values[1] < 6 && sensorEvent.values[1] > 2){
-                    if(!curve.equals("Dreta Suau")){
-                        curve = "Dreta Suau";
-                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
-                    }
-                }else if(sensorEvent.values[1] < 10 && sensorEvent.values[1] > 6){
-                    if(!curve.equals("Dreta Fort")){
-                        curve = "Dreta Fort";
-                        Toast.makeText(getContext(),curve,Toast.LENGTH_SHORT).show();
+                readValue = sensorEvent.values[1];
+                if(manual) {
+                    //Returns 0 when phone is horizontal and -9.81/9.81 when vertical
+                    //Depending on the rotation, we get some sort of directions
+                    if (readValue > -constants.GYRO_MAX_FORWARD && readValue < constants.GYRO_MAX_FORWARD) {
+                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_FORWARD)) {
+                            curve = constants.PROTOCOL_MOVEMENT_FORWARD;
+                            viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_FORWARD);
+                            Log.e("hola","recto");
+                        }
+                    } else if (readValue < -constants.GYRO_MAX_FORWARD && readValue > -constants.GYRO_MAX_SOFT) {
+                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_SOFT_LEFT)) {
+                            curve = constants.PROTOCOL_MOVEMENT_SOFT_LEFT;
+                            viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_SOFT_LEFT);
+                            Log.e("hola","left");
+                        }
+                    } else if (readValue < -constants.GYRO_MAX_SOFT && readValue > -constants.GYRO_MAX_HARD) {
+                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_HARD_LEFT)) {
+                            curve = constants.PROTOCOL_MOVEMENT_HARD_LEFT;
+                            viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_HARD_LEFT);
+                        }
+                    } else if (readValue < constants.GYRO_MAX_SOFT && readValue > constants.GYRO_MAX_FORWARD) {
+                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_SOFT_RIGHT)) {
+                            curve = constants.PROTOCOL_MOVEMENT_SOFT_RIGHT;
+                            viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_SOFT_RIGHT);
+                        }
+                    } else if (readValue < constants.GYRO_MAX_HARD && readValue > constants.GYRO_MAX_SOFT) {
+                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_HARD_RIGHT)) {
+                            curve = constants.PROTOCOL_MOVEMENT_HARD_RIGHT;
+                            viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_HARD_RIGHT);
+                        }
                     }
                 }
             }
@@ -204,13 +200,13 @@ public class RemoteFragment extends Fragment {
         btnThrottle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
-                    viewModel.sendMessage("Stop");
-                }
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Toast.makeText(getContext(), "Throttle", Toast.LENGTH_SHORT).show();
-                    viewModel.sendMessage("Throttle");
+                if (manual) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        viewModel.sendMessage(constants.PROTOCOL_BRAKE);
+                    }
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        viewModel.sendMessage(constants.PROTOCOL_THROTTLE);
+                    }
                 }
                 return false;
             }
@@ -219,18 +215,20 @@ public class RemoteFragment extends Fragment {
         btnAuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //btnAuto.setEnabled(false);
-                //btnManual.setEnabled(true);
-                Toast.makeText(getContext(), "Auto mode", Toast.LENGTH_SHORT).show();
+                btnAuto.setEnabled(false);
+                btnManual.setEnabled(true);
+                manual = false;
+                viewModel.sendMessage(constants.PROTOCOL_AUTOMATIC);
             }
         });
 
         btnManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //btnAuto.setEnabled(true);
-                //btnManual.setEnabled(false);
-                Toast.makeText(getContext(), "Manual mode", Toast.LENGTH_SHORT).show();
+                btnAuto.setEnabled(true);
+                btnManual.setEnabled(false);
+                manual = true;
+                viewModel.sendMessage(constants.PROTOCOL_MANUAL);
             }
         });
 
@@ -238,8 +236,10 @@ public class RemoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
+                    viewModel.sendMessage(constants.PROTOCOL_LIGHTS_OFF);
                     btnLights.setText(R.string.rLigthsOff);
                 }else{
+                    viewModel.sendMessage(constants.PROTOCOL_LIGHTS_ON);
                     btnLights.setText(R.string.rLigthsOn);
                 }
             }
@@ -248,14 +248,22 @@ public class RemoteFragment extends Fragment {
         btnGearDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Dec gear", Toast.LENGTH_SHORT).show();
+                if (gear > -constants.GEAR_MAX) {
+                    gear--;
+                    viewModel.sendMessage(constants.GEAR_CHANGE + Integer.toString(gear));
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]));
+                }
             }
         });
 
         btnGearUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Inc gear", Toast.LENGTH_SHORT).show();
+                if (gear < constants.GEAR_MAX) {
+                    gear++;
+                    viewModel.sendMessage(constants.GEAR_CHANGE + Integer.toString(gear));
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]));
+                }
             }
         });
 
@@ -274,14 +282,18 @@ public class RemoteFragment extends Fragment {
         };
         viewModel.refreshTemperature(getContext()).observe(this, sDegrees);
 
-        manual = new Observer<Boolean>() {
+
+        danger = new Observer<Integer>() {
             @Override
-            public void onChanged(@Nullable Boolean msg) {
-                btnAuto.setEnabled(!msg);
-                btnManual.setEnabled(msg);
+            public void onChanged(@Nullable Integer msg) {
+                if (msg > 1) {
+                    ivDanger.setVisibility(View.VISIBLE);
+                }else{
+                    ivDanger.setVisibility(View.INVISIBLE);
+                }
             }
         };
-        viewModel.refreshManual(getContext()).observe(this, manual);
+        viewModel.refreshDanger(getContext()).observe(this, danger);
     }
 
     @Override
@@ -299,6 +311,7 @@ public class RemoteFragment extends Fragment {
     @Override
     public void onStop() {
         viewModel.stopMessaging(getContext());
+        viewModel.sendMessage(constants.MODE_MENU);
         getActivity().finish();
         super.onStop();
     }

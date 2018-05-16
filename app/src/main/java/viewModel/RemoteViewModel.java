@@ -22,7 +22,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
 
     //observable String variable
     private MutableLiveData<String> sLiveTemperature;
-    private MutableLiveData<Boolean> bLiveManual; //1 if manual, 0 if auto
+    private MutableLiveData<Integer> iDanger; //1 if manual, 0 if auto
     private boolean currentManual;
 
     private static String sMessages;
@@ -59,17 +59,16 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         return sLiveTemperature;
     }
 
-    public LiveData<Boolean> refreshManual (Context context){
+    public LiveData<Integer> refreshDanger (Context context){
 
-        if(bLiveManual == null) {
+        if(iDanger == null) {
             //init observable variable
-            bLiveManual = new MutableLiveData<>();
-            currentManual = true;
-            bLiveManual.setValue(currentManual);
+            iDanger = new MutableLiveData<>();
+            iDanger.setValue(0);
         }
 
         //returns the observable variable
-        return bLiveManual;
+        return iDanger;
     }
 
     public void stopMessaging(Context context){
@@ -90,24 +89,17 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     @Override
     public void onIncomingMessage (String msg) {
         //Assign value for the temperature only if it is for me
-        subStrings = msg.split("_");
+        subStrings = msg.split(Constants.PROTOCOL_SPLIT);
 
-        Log.e("cambio","caca");
         if(subStrings.length > 1) {
-
-            Log.e("cambio","pene");
-            if (subStrings[0].equals("rem")) {
+            if (subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {
                 switch (subStrings[1]) {
-                    case "temp":
-                        Log.e("cambio","hola");
+                    case Constants.PROTOCOL_REMOTE_TEMPERATURE:
                         sLiveTemperature.postValue(subStrings[2]);
                         break;
 
-                    case "manAuto":
-                        Log.e("cambio","hola");
-                        currentManual = !currentManual;
-                        bLiveManual.postValue(currentManual);
-
+                    case Constants.PROTOCOL_REMOTE_DANGER:
+                        iDanger.postValue(Integer.valueOf(subStrings[2]));
                         break;
 
                 }
