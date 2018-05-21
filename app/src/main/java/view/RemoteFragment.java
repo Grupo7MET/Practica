@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,8 +101,8 @@ public class RemoteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
-        manual = false;
-        lights = constants.PROTOCOL_LIGHTS_ON;
+        manual = false; //By this way, we initialize when postValue is done in the View Model
+        lights = constants.PROTOCOL_LIGHTS_ON; //By this way, we initialize when postValue is done in the View Model
         initViewModel();
         bindViews(v);
         moving = false;
@@ -390,8 +389,6 @@ public class RemoteFragment extends Fragment {
                 }
 
                 if(!lights.equals(msg.getLights())){
-                    Log.e("mio", lights);
-                    Log.e("rx", msg.getLights());
                     viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
                 }
 
