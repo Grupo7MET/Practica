@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.example.abmcr.robot.R;
 import viewModel.LogViewModel;
 
-import java.util.ArrayList;
-
 /**
  * Class that creates the communication view, assign all the visual components, manage the communication
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
