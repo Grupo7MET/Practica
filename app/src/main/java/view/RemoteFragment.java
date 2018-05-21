@@ -42,15 +42,26 @@ public class RemoteFragment extends Fragment {
 
     private RemoteViewModel viewModel;
 
+    /**
+     * Visual part to link the fragment with the View
+     */
     private static TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
     private ImageView ivDangerUS, ivDangerBumper1, ivDangerBumper2;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
+
+    /**
+     * Variables containing the current status
+     */
     private int gear;
     private String curve;
     private boolean manual;
     private String lights;
     private float readValue;
     private boolean moving;
+
+    /**
+     * Observer variables that will be received through UDP packets
+     */
     /**
      * danger represents in 3 bits the possible dangers
      * Weights:
@@ -62,6 +73,12 @@ public class RemoteFragment extends Fragment {
     private Observer<Integer> danger;
     private Observer<String> sDegrees; //a string with the degrees received from the Arduino
     private Observer<RemotePacket> packet;
+    private Observer<Boolean> lightsOn;
+    private Observer<Boolean> liveManual;
+
+    /**
+     * Other resources used in this Fragment
+     */
     private GestureLibrary mLibrary;
     private GestureOverlayView gestures;
     private SensorManager mSensorManager;
@@ -96,7 +113,9 @@ public class RemoteFragment extends Fragment {
         return v;
     }
 
-    //Assigning all the visual components
+    /**
+     * Assigning all the visual components
+     */
     private void bindViews(View v){
 
         tvTitle = v.findViewById(R.id.tvTitle);
@@ -165,7 +184,9 @@ public class RemoteFragment extends Fragment {
         });
 
 
-        //About the gyroscope
+        /**
+         * About the gyroscope
+         */
         mSensorManager = (SensorManager)getContext().getSystemService(SENSOR_SERVICE);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
@@ -227,7 +248,9 @@ public class RemoteFragment extends Fragment {
             }
         };
 
-        //Button Listeners
+        /**
+         * Button listeners
+         */
         btnThrottle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -248,9 +271,6 @@ public class RemoteFragment extends Fragment {
         btnAuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAuto.setEnabled(false);
-                btnManual.setEnabled(true);
-                manual = false;
                 viewModel.sendMessage(constants.SENDING_PROTOCOL_AUTOMATIC + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
             }
         });
@@ -258,9 +278,6 @@ public class RemoteFragment extends Fragment {
         btnManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAuto.setEnabled(true);
-                btnManual.setEnabled(false);
-                manual = true;
                 viewModel.sendMessage(constants.SENDING_PROTOCOL_MANUAL + Integer.toString(convertGear(gear)));
             }
         });
@@ -268,15 +285,7 @@ public class RemoteFragment extends Fragment {
         btnLights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
-                    viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
-                    btnLights.setText(R.string.rLigthsOff);
-                    lights = constants.PROTOCOL_LIGHTS_ON;
-                }else{
-                    viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
-                    btnLights.setText(R.string.rLigthsOn);
-                    lights = constants.PROTOCOL_LIGHTS_OFF;
-                }
+                viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
             }
         });
 
@@ -308,7 +317,9 @@ public class RemoteFragment extends Fragment {
 
     }
 
-    //Assign ViewModel to this fragment & the observer variable
+    /**
+     * Dealing with all the Observer variables
+     */
     private void initViewModel(){
 
         viewModel = ViewModelProviders.of(this).get(RemoteViewModel.class);
@@ -320,6 +331,45 @@ public class RemoteFragment extends Fragment {
             }
         };
         viewModel.refreshTemperature(getContext()).observe(this, sDegrees);
+
+        lightsOn = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean msg) {
+                if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
+                    btnLights.setText(R.string.rLigthsOff);
+                    lights = constants.PROTOCOL_LIGHTS_ON;
+                }else{
+                    btnLights.setText(R.string.rLigthsOn);
+                    lights = constants.PROTOCOL_LIGHTS_OFF;
+                }
+            }
+        };
+        viewModel.refreshLights(getContext()).observe(this, lightsOn);
+
+        liveManual = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean msg) {
+                if(manual){
+                    // Automatic mode starts
+                    btnAuto.setEnabled(false);
+                    btnManual.setEnabled(true);
+                    manual = false;
+
+                    gear = Integer.valueOf(constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
+                    tvVelocityValue.setText("-" + Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
+
+                }else{
+                    // Manual mode starts
+                    btnAuto.setEnabled(true);
+                    btnManual.setEnabled(false);
+                    manual = true;
+
+                    gear = 0;
+                    curve = constants.SENDING_PROTOCOL_MOVEMENT_FORWARD;
+                }
+            }
+        };
+        viewModel.refreshManual(getContext()).observe(this, liveManual);
 
         packet = new Observer<RemotePacket>() {
             @Override
@@ -378,14 +428,19 @@ public class RemoteFragment extends Fragment {
         viewModel.refreshDanger(getContext()).observe(this, danger);
     }
 
+    /**
+     *
+     * @param g gives the current gear between -3 and 3
+     * @return the same gear from 0 to 3 and converts -1 -> 4, -2 -> 5, -3 -> 6
+     */
     public int convertGear(int g){
         int a = 0;
 
         if(!moving) a = 0;
         else if(g >= 0) a = g;
-        else if(g == -1) a = 4;
-        else if (g == -2) a = 5;
-        else if (g == -3) a = 6;
+        else if(g == -1) a = constants.SENDING_PROTOCOL_VELOCITY_MINUS1;
+        else if (g == -2) a = constants.SENDING_PROTOCOL_VELOCITY_MINUS2;
+        else if (g == -3) a = constants.SENDING_PROTOCOL_VELOCITY_MINUS3;
 
         return a;
     }
@@ -402,6 +457,10 @@ public class RemoteFragment extends Fragment {
         mSensorManager.unregisterListener(mGyroscopeEventListener);
     }
 
+    /**
+     * Before exit, send a packet saying that we quit
+     * The communication is closed
+     */
     @Override
     public void onStop() {
         viewModel.sendMessage(constants.SENDING_PROTOCOL_BACK_TO_MENU + Integer.toString(convertGear(gear)));

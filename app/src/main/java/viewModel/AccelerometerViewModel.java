@@ -87,15 +87,14 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
     /*-------------------------- Repository Callbacks -----------------------------*/
 
     /**
-     * Continuously refreshes both variables
-     * @param msg new received log
+     * Parses the information and sends it to the fragment
+     * @param msg new received packet
      */
     @Override
     public void onIncomingMessage (String msg) {
-        //post value to the view
-        //We continuously refresh both variables
 
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
         if (subStrings[0].equals(Constants.SENDING_PROTOCOL_ACCELEROMETER)) {
             iLiveAccelerometerX.postValue(subStrings[1]);
             iLiveAccelerometerY.postValue(subStrings[2]);

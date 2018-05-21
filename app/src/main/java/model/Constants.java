@@ -17,7 +17,6 @@ public class Constants {
     public static final String PROTOCOL_SPLIT = "_";
 
     //Remote Mode
-
     public static final int GEAR_INIT = 0;
     public static final int GEAR_MAX = 3;
 
@@ -29,6 +28,9 @@ public class Constants {
     public static final int GYRO_MAX_SOFT = 6;
     public static final int GYRO_MAX_HARD = 10;
 
+    /**
+     * All the constants used on the communication protocol to send/receive
+     */
     public static final String PROTOCOL_LIGHTS_OFF = "0";
     public static final String PROTOCOL_LIGHTS_ON = "1";
 
@@ -47,6 +49,13 @@ public class Constants {
     public static final String SENDING_PROTOCOL_ACCELEROMETER = "m";
     public static final String SENDING_PROTOCOL_BACK_TO_MENU = "q";
     public static final String SENDING_PROTOCOL_VELOCITY_MEDIUM = "2";
+    public static final int SENDING_PROTOCOL_VELOCITY_MINUS1 = 4;
+    public static final int SENDING_PROTOCOL_VELOCITY_MINUS2 = 5;
+    public static final int SENDING_PROTOCOL_VELOCITY_MINUS3 = 6;
+
+    public static final String PROTOCOL_LIGHTS_CHANGED = "lightschanged";
+    public static final String PROTOCOL_MANUAL_CHANGED = "modechanged";
+
 
     public static final float PREDICTOR_MIN_SCORE = 1;
 
@@ -63,6 +72,9 @@ public class Constants {
     //LOG
     public static final String LOG_TITLE = "LOG REGISTER" + '\n' + '\n';
     public static final int INPUT_BYTES = 5000;
+    /**
+     * IP and ports for the transmission
+     */
     public static final String MOBIL_IP = "192.168.1.48";
     public static final String ARDUINO_IP = "192.168.1.46"; //PC
     public static final int MOBIL_PORT = 10502;

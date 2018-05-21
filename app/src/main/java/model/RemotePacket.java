@@ -1,9 +1,8 @@
 package model;
 
-import java.util.concurrent.CopyOnWriteArraySet;
-
 /**
- * Created by Manel on 21/5/18.
+ * Class that enhances a data structure to tidy up all the fields in a Remote Mode packet
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class RemotePacket {
@@ -24,6 +23,10 @@ public class RemotePacket {
         this.manual = manual;
     }
 
+    /**
+     * Getters and setters
+     * @return the desired variables
+     */
     public String getTemperature() {
         return temperature;
     }

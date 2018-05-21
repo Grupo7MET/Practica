@@ -22,20 +22,25 @@ import static model.CommunicationService.serviceCallbacks;
 
 public class CommunicationAsyncTask {
 
+    /**
+     * @dataToSend is the variable that contains the message to send
+     */
     static String dataToSend;
 
+    /**
+     * variables indicating if a transission or receiving is active
+     */
     private static boolean txIsOn,rxIsOn;
 
+    /**
+     * @txTask: AsyncTask used to send packets. It starts communication, sends the info and closes the channel
+     */
     private static TxTask txTask;
 
     /**
-     * Executes when data is received.
-     * A message is received, classified and pushed to the viewModel (doInBackground)
-     * It is recalled to keep receiving messages (onPostExecute)
+     * @rxTask: Thread used to receive information. It is always active
      */
-
     static Thread rxTask;
-
 
     static void initCommunications() {
 
@@ -77,6 +82,9 @@ public class CommunicationAsyncTask {
         rxTask.start();
     }
 
+    /**
+     * @sendMessageUDP: Method used to send a packet. Starts a new AsyncTask
+     */
     static void sendMessageUDP(){
         txIsOn = true;
         txTask = new TxTask();
@@ -84,9 +92,8 @@ public class CommunicationAsyncTask {
     }
 
     /**
-     * Used to stop the communication. Tasks are cancelled and variables are reassigned
+     * @stopCommunications: Used to stop the communication. Tasks are cancelled and variables are reassigned
      */
-
     static void stopCommunications() {
 
         //Stop both communications
@@ -104,8 +111,8 @@ public class CommunicationAsyncTask {
     }
 
     /**
-     * Is executed when transmitting data
-     * Sends through the socket the specified message (doInBackground)
+     * @TxTask Is executed when transmitting data
+     * Sends through the socket the specified message (doInBackground). Later it closes the socket
      */
     private static class TxTask extends AsyncTask<Void, Void, Void> {
 

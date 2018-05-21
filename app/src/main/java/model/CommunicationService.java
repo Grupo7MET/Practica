@@ -41,7 +41,9 @@ public class CommunicationService extends Service {
     }
 
     @Override
-    //Init communication service
+    /**
+     * Init communication service
+     */
     public int onStartCommand(Intent i, int flags, final int startId){
         try {
             dgSocket = new DatagramSocket(Constants.MOBIL_PORT);
@@ -54,7 +56,9 @@ public class CommunicationService extends Service {
     }
 
     @Override
-    //Destroy communication service
+    /**
+     * @onDestroy Destroys communication service
+     */
     public void onDestroy(){
         stopCommunications();
         communicationInProgress = false;
@@ -62,7 +66,7 @@ public class CommunicationService extends Service {
     }
 
     /**
-     * Prepare the data to send on the variables
+     * @sendMessage Prepares the data to send on the variable
      * @param msg is the message to send
      */
     public static void sendMessage(String msg){
@@ -70,6 +74,10 @@ public class CommunicationService extends Service {
         CommunicationAsyncTask.sendMessageUDP();
     }
 
+    /**
+     * Method used from the Repository to send a message to outside
+     * @param msg is the message to send
+     */
     public static void writeMessage(String msg){
         sendMessage(msg);
     }
@@ -86,10 +94,12 @@ public class CommunicationService extends Service {
     }
     /*--------------------------------------------------------------------------*/
     /*-------------------------- Service Interface -----------------------------*/
+
+    /**
+     * Callbacks to the Repository
+     */
     public interface CommunicationServiceInterface{
         void rxMessage(String msg);
         void txMessage(String msg);
     }
-    /*------------------- Callback Interface to CommunicationAsyncTask ---------------------*/
-
 }

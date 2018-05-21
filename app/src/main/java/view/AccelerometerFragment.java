@@ -49,7 +49,9 @@ public class AccelerometerFragment extends Fragment {
         return v;
     }
 
-    //Assigning all the visual components
+    /**
+     * Assigning all the visual components
+     */
     private void bindViews(View v){
         tvTitle = v.findViewById(R.id.tvTitle);
         tvX = v.findViewById(R.id.tvX);
@@ -65,7 +67,9 @@ public class AccelerometerFragment extends Fragment {
         tvZ.setText(R.string.aZ);
     }
 
-    //Assign ViewModel to this fragment & the observer variable
+    /**
+     * Assigning ViewModel to this fragment & the observer variables methods
+     */
     private void initViewModel(){
 
         viewModel = ViewModelProviders.of(this).get(AccelerometerViewModel.class);
@@ -106,6 +110,10 @@ public class AccelerometerFragment extends Fragment {
         super.onPause();
     }
 
+    /**
+     * Before exit, send a packet saying that we quit
+     * The communication is closed
+     */
     @Override
     public void onStop() {
         viewModel.sendMessage(Constants.SENDING_PROTOCOL_BACK_TO_MENU);

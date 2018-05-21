@@ -18,8 +18,10 @@ import static model.CommunicationService.writeMessage;
 
 public class Repository implements CommunicationService.CommunicationServiceInterface{
 
-    //interface that implements all the callbacks from the repository to the class that implements the interface
-    //in this case the ViewModel
+    /**
+     * interface that implements all the callbacks from the repository to the class that implements the interface
+     * in this case the ViewModel
+     */
     private static RepositoryCallbacks repositoryCallback;
 
     private static boolean serviceIsBound;
@@ -35,7 +37,9 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    //When we want to stop the messaging service
+    /**
+     * When we want to stop the messaging service
+     */
     public void stopService(Context context) {
         if (serviceIsBound) {
             context.unbindService(serviceConnection);
@@ -43,7 +47,7 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         }
         Intent intent = new Intent(context, CommunicationService.class);
         context.stopService(intent);
-        //push to the viewmodel that the service has been stopped
+        //push to the viewmodel saying that the service has been stopped
         repositoryCallback.onServiceStopped();
     }
 
@@ -79,7 +83,7 @@ public class Repository implements CommunicationService.CommunicationServiceInte
 
 
     /**
-     * pushes transmitted message to the Logviewmodel
+     * pushes transmitted message to the Logviewmodel. Not Used in this deliverable.
      * @param msg transmitted message
      */
     public void txMessage(String msg) {
@@ -87,12 +91,19 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         repositoryCallback.onIncomingMessage(time + " Android says: " + msg);
     }
 
+    /**
+     * Method used to send a message from the View Models to outside
+     * @param msg is the message to send
+     */
     public void sendMessage(String msg){
         writeMessage(msg);
     }
 
     /*-------------------- Repository Interface to ViewModel ------------------------*/
 
+    /**
+     * Callbacks to the View Models
+     */
     public interface RepositoryCallbacks {
         void onIncomingMessage(String msg);
         void onServiceStopped();
