@@ -102,12 +102,12 @@ public class RemoteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
+        manual = false;
         initViewModel();
         bindViews(v);
         moving = false;
         gear = constants.GEAR_INIT;
         lights = constants.PROTOCOL_LIGHTS_OFF;
-        manual = true;
         curve = "";
         viewModel.sendMessage(constants.SENDING_PROTOCOL_REMOTE + Integer.toString(convertGear(gear)));
         return v;
@@ -349,24 +349,26 @@ public class RemoteFragment extends Fragment {
         liveManual = new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean msg) {
-                if(manual){
+                if (manual) {
                     // Automatic mode starts
                     btnAuto.setEnabled(false);
                     btnManual.setEnabled(true);
                     manual = false;
 
                     gear = Integer.valueOf(constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
-                    tvVelocityValue.setText("-" + Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
 
-                }else{
+                } else {
                     // Manual mode starts
                     btnAuto.setEnabled(true);
                     btnManual.setEnabled(false);
                     manual = true;
 
                     gear = 0;
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
                     curve = constants.SENDING_PROTOCOL_MOVEMENT_FORWARD;
                 }
+
             }
         };
         viewModel.refreshManual(getContext()).observe(this, liveManual);
@@ -429,7 +431,6 @@ public class RemoteFragment extends Fragment {
     }
 
     /**
-     *
      * @param g gives the current gear between -3 and 3
      * @return the same gear from 0 to 3 and converts -1 -> 4, -2 -> 5, -3 -> 6
      */
