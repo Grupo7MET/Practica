@@ -6,14 +6,14 @@ package model;
 
 public class RemotePacket {
 
-    private float temperature;
-    private int danger;
+    private String temperature;
+    private String danger;
     private String movement;
-    private int velocity;
-    private boolean lights;
+    private String velocity;
+    private String lights;
     private String manual;
 
-    public RemotePacket(float temperature, int danger, String movement, int velocity, boolean lights, String manual){
+    public RemotePacket(String temperature, String danger, String movement, String velocity, String lights, String manual){
         this.temperature = temperature;
         this.danger = danger;
         this.movement = movement;
@@ -22,19 +22,19 @@ public class RemotePacket {
         this.manual = manual;
     }
 
-    public float getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public int getDanger() {
+    public String getDanger() {
         return danger;
     }
 
-    public void setDanger(int danger) {
+    public void setDanger(String danger) {
         this.danger = danger;
     }
 
@@ -46,24 +46,28 @@ public class RemotePacket {
         this.movement = movement;
     }
 
-    public int getVelocity() {
+    public String getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(int velocity) {
+    public void setVelocity(String velocity) {
         this.velocity = velocity;
     }
 
-    public boolean isLights() {
+    public String getLights() {
         return lights;
     }
 
-    public void setLights(boolean lights) {
+    public void setLights(String lights) {
         this.lights = lights;
     }
 
-    public String getManual() {
-        return manual;
+    public boolean getManual() {
+        if(this.manual.equals("MANUAL")){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void setManual(String manual) {

@@ -22,7 +22,7 @@ public class Constants {
 
     public static final int GEAR_INIT = 0;
     public static final int GEAR_MAX = 3;
-    public static final String GEAR_CHANGE = "change gear";
+    public static final String PROTOCOL_GEAR_CHANGE = "change gear";
 
     public static final int DANGER_BUMPER1 = 1;
     public static final int DANGER_BUMPER2 = 2;
@@ -32,14 +32,14 @@ public class Constants {
     public static final int GYRO_MAX_SOFT = 6;
     public static final int GYRO_MAX_HARD = 10;
 
-    public static final String PROTOCOL_LIGHTS_OFF = "lights off";
-    public static final String PROTOCOL_LIGHTS_ON = "lights on";
+    public static final String PROTOCOL_LIGHTS_OFF = "OFF";
+    public static final String PROTOCOL_LIGHTS_ON = "ON";
 
-    public static final String PROTOCOL_MOVEMENT_FORWARD = "forward";
-    public static final String PROTOCOL_MOVEMENT_SOFT_LEFT = "soft left";
-    public static final String PROTOCOL_MOVEMENT_HARD_LEFT = "hard left";
-    public static final String PROTOCOL_MOVEMENT_SOFT_RIGHT = "soft right";
-    public static final String PROTOCOL_MOVEMENT_HARD_RIGHT = "hard right";
+    public static final String PROTOCOL_MOVEMENT_FORWARD = "FORWARD";
+    public static final String PROTOCOL_MOVEMENT_SOFT_LEFT = "SOFTLEFT";
+    public static final String PROTOCOL_MOVEMENT_HARD_LEFT = "HARDLEFT";
+    public static final String PROTOCOL_MOVEMENT_SOFT_RIGHT = "SOFTRIGHT";
+    public static final String PROTOCOL_MOVEMENT_HARD_RIGHT = "HARDRIGHT";
 
     public static final float PREDICTOR_MIN_SCORE = 1;
 

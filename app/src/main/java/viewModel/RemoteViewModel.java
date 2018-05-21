@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.Log;
 
 import model.Constants;
+import model.RemotePacket;
 import model.Repository;
 
 
@@ -27,6 +28,9 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     private static String sMessages;
 
     private static String[] subStrings;
+
+    private RemotePacket packet;
+    private MutableLiveData<RemotePacket> livePacket;
 
 
     //Constructor
@@ -70,6 +74,17 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         return iDanger;
     }
 
+    public LiveData<RemotePacket> refreshData (Context context){
+
+        if(livePacket == null) {
+            //init observable variable
+            livePacket = new MutableLiveData<>();
+        }
+
+        //returns the observable variable
+        return livePacket;
+    }
+
     public void stopMessaging(Context context){
         //tell the repository to stop the service
         repository.stopService(context);
@@ -90,7 +105,11 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         //Assign value for the temperature only if it is for me
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
 
-
+        if(subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {
+            parseInfo(msg);
+            checkInfo(packet);
+        }
+        /*
         if(subStrings.length > 1) {
             if (subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {
                 switch (subStrings[1]) {
@@ -104,7 +123,24 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
 
                 }
             }
+        }*/
+    }
+
+    public void parseInfo(String info){
+        subStrings = info.split(Constants.PROTOCOL_SPLIT);
+
+        if(subStrings[0].equals(Constants.PROTOCOL_REMOTE)){
+            packet = new RemotePacket(subStrings[1],subStrings[2],subStrings[3],subStrings[4],subStrings[5],subStrings[6]);
+        }else{
+            sendMessage(Constants.PROTOCOL_REMOTE);
         }
+
+    }
+
+    public void checkInfo(RemotePacket packet){
+        sLiveTemperature.postValue(packet.getTemperature());
+        iDanger.postValue(Integer.valueOf(packet.getDanger()));
+        livePacket.postValue(packet);
     }
 
     @Override
