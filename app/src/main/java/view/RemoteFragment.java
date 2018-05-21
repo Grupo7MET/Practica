@@ -42,7 +42,7 @@ public class RemoteFragment extends Fragment {
     private RemoteViewModel viewModel;
 
     private static TextView tvTitle, tvTemp, tvVelocity, tvVelocityValue;
-    private ImageView ivDanger;
+    private ImageView ivDangerUS, ivDangerBumper1, ivDangerBumper2;
     private Button btnManual, btnAuto, btnLights, btnThrottle, btnGearDown, btnGearUp;
     private int gear;
     private String curve;
@@ -51,7 +51,7 @@ public class RemoteFragment extends Fragment {
     /**
      * danger represents in 3 bits the possible dangers
      * Weights:
-     * 1 for rigºht bumper
+     * 1 for right bumper
      * 2 for left bumper
      * 4 for Ultrasound
      * The sum of them is the result for this number
@@ -84,6 +84,7 @@ public class RemoteFragment extends Fragment {
         initViewModel();
         bindViews(v);
         gear = constants.GEAR_INIT;
+        manual = true;
         curve = "";
         viewModel.sendMessage(constants.MODE_REMOTE);
         return v;
@@ -96,7 +97,9 @@ public class RemoteFragment extends Fragment {
         tvTemp = v.findViewById(R.id.tvTemp);
         tvVelocity = v.findViewById(R.id.tvVelocity);
         tvVelocityValue = v.findViewById(R.id.tvVelocityValue);
-        ivDanger = v.findViewById(R.id.ivDanger);
+        ivDangerUS = v.findViewById(R.id.ivDangerUS);
+        ivDangerBumper1 = v.findViewById(R.id.ivDangerBumper1);
+        ivDangerBumper2 = v.findViewById(R.id.ivDangerBumper2);
         btnAuto = v.findViewById(R.id.btnAuto);
         btnManual = v.findViewById(R.id.btnMan);
         btnLights = v.findViewById(R.id.btnLights);
@@ -122,6 +125,7 @@ public class RemoteFragment extends Fragment {
         btnThrottle.setText(R.string.rThrottle);
         btnGearDown.setText(R.string.rGearDown);
         btnGearUp.setText(R.string.rGearUp);
+        tvVelocityValue.setText(R.string.rVelocityValue);
 
 
         gestures.addOnGesturePerformedListener(new GestureOverlayView.OnGesturePerformedListener() {
@@ -163,13 +167,11 @@ public class RemoteFragment extends Fragment {
                         if (!curve.equals(constants.PROTOCOL_MOVEMENT_FORWARD)) {
                             curve = constants.PROTOCOL_MOVEMENT_FORWARD;
                             viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_FORWARD);
-                            Log.e("hola","recto");
                         }
                     } else if (readValue < -constants.GYRO_MAX_FORWARD && readValue > -constants.GYRO_MAX_SOFT) {
                         if (!curve.equals(constants.PROTOCOL_MOVEMENT_SOFT_LEFT)) {
                             curve = constants.PROTOCOL_MOVEMENT_SOFT_LEFT;
                             viewModel.sendMessage(constants.PROTOCOL_MOVEMENT_SOFT_LEFT);
-                            Log.e("hola","left");
                         }
                     } else if (readValue < -constants.GYRO_MAX_SOFT && readValue > -constants.GYRO_MAX_HARD) {
                         if (!curve.equals(constants.PROTOCOL_MOVEMENT_HARD_LEFT)) {
@@ -248,10 +250,10 @@ public class RemoteFragment extends Fragment {
         btnGearDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gear > -constants.GEAR_MAX) {
+                if (gear > -constants.GEAR_MAX && manual) {
                     gear--;
                     viewModel.sendMessage(constants.GEAR_CHANGE + Integer.toString(gear));
-                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]));
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
                 }
             }
         });
@@ -259,10 +261,10 @@ public class RemoteFragment extends Fragment {
         btnGearUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gear < constants.GEAR_MAX) {
+                if (gear < constants.GEAR_MAX && manual) {
                     gear++;
                     viewModel.sendMessage(constants.GEAR_CHANGE + Integer.toString(gear));
-                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]));
+                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
                 }
             }
         });
@@ -286,10 +288,26 @@ public class RemoteFragment extends Fragment {
         danger = new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer msg) {
-                if (msg > 1) {
-                    ivDanger.setVisibility(View.VISIBLE);
+                int aux = msg;
+                if (aux >= constants.DANGER_US) {
+                    ivDangerUS.setVisibility(View.VISIBLE);
+                    aux -= constants.DANGER_US;
                 }else{
-                    ivDanger.setVisibility(View.INVISIBLE);
+                    ivDangerUS.setVisibility(View.INVISIBLE);
+                }
+
+                if (aux >= constants.DANGER_BUMPER1) {
+                    ivDangerBumper1.setVisibility(View.VISIBLE);
+                    aux -= constants.DANGER_BUMPER1;
+                }else{
+                    ivDangerBumper1.setVisibility(View.INVISIBLE);
+                }
+
+                if (aux >= constants.DANGER_BUMPER2) {
+                    ivDangerBumper2.setVisibility(View.VISIBLE);
+                    aux -= constants.DANGER_BUMPER2;
+                }else{
+                    ivDangerBumper2.setVisibility(View.INVISIBLE);
                 }
             }
         };

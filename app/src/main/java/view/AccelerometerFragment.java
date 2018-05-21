@@ -1,7 +1,10 @@
 package view;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.abmcr.robot.R;
+
+import model.Constants;
+import viewModel.AccelerometerViewModel;
 
 /**
  * Class that creates the accelerometer view and assign all the visual components
@@ -18,6 +24,8 @@ import com.example.abmcr.robot.R;
 public class AccelerometerFragment extends Fragment {
 
     private TextView tvTitle, tvX,tvY,tvZ, tvXValue,tvYValue,tvZValue;
+    private Observer<String> acc_x, acc_y, acc_z;
+    private AccelerometerViewModel viewModel;
 
     public static AccelerometerFragment newInstance(){
         return new AccelerometerFragment();
@@ -35,7 +43,9 @@ public class AccelerometerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_accelerometer,container,false);
+        initViewModel();
         bindViews(v);
+        viewModel.sendMessage(Constants.MODE_REMOTE);
         return v;
     }
 
@@ -53,9 +63,37 @@ public class AccelerometerFragment extends Fragment {
         tvX.setText(R.string.aX);
         tvY.setText(R.string.aY);
         tvZ.setText(R.string.aZ);
-        tvXValue.setText("3");
-        tvYValue.setText("3");
-        tvZValue.setText("3");
+    }
+
+    //Assign ViewModel to this fragment & the observer variable
+    private void initViewModel(){
+
+        viewModel = ViewModelProviders.of(this).get(AccelerometerViewModel.class);
+
+        acc_x = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                tvXValue.setText(msg);
+            }
+        };
+        viewModel.refreshAccelerometerX(getContext()).observe(this, acc_x);
+
+        acc_y = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                tvYValue.setText(msg);
+            }
+        };
+        viewModel.refreshAccelerometerY(getContext()).observe(this, acc_y);
+
+        acc_z = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                tvZValue.setText(msg);
+            }
+        };
+        viewModel.refreshAccelerometerZ(getContext()).observe(this, acc_z);
+
     }
 
     @Override
@@ -70,7 +108,8 @@ public class AccelerometerFragment extends Fragment {
 
     @Override
     public void onStop() {
-        //viewModel.stopMessaging(getContext());
+        viewModel.stopMessaging(getContext());
+        viewModel.sendMessage(Constants.MODE_MENU);
         getActivity().finish();
         super.onStop();
     }

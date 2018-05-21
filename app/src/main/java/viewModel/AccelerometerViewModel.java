@@ -11,7 +11,8 @@ import model.Repository;
 import static java.lang.Integer.valueOf;
 
 /**
- * Created by Manel on 9/5/18.
+ * ViewModel for the accelerometer fragment
+ * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
 public class AccelerometerViewModel extends ViewModel implements Repository.RepositoryCallbacks {
@@ -20,9 +21,9 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
     private Repository repository;
 
     //observable String variable
-    private MutableLiveData<Integer> iLiveAccelerometerX;
-    private MutableLiveData<Integer> iLiveAccelerometerY;
-    private MutableLiveData<Integer> iLiveAccelerometerZ;
+    private MutableLiveData<String> iLiveAccelerometerX;
+    private MutableLiveData<String> iLiveAccelerometerY;
+    private MutableLiveData<String> iLiveAccelerometerZ;
 
     private static String[] subStrings;
 
@@ -32,16 +33,16 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
     }
 
     /**
-     * Keeps the logs updated
+     * Keeps the variables updated
      * @param context
      * @return
      */
-    public LiveData<Integer> refreshAccelerometerX (Context context){
+    public LiveData<String> refreshAccelerometerX (Context context){
 
         if(iLiveAccelerometerX == null) {
             //init observable variable
             iLiveAccelerometerX = new MutableLiveData<>();
-            iLiveAccelerometerX.setValue(0);
+            iLiveAccelerometerX.postValue("");
         }
 
         //tells the repository to start the service
@@ -50,24 +51,24 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
         return iLiveAccelerometerX;
     }
 
-    public LiveData<Integer> refreshAccelerometerY (Context context){
+    public LiveData<String> refreshAccelerometerY (Context context){
 
         if(iLiveAccelerometerY == null) {
             //init observable variable
             iLiveAccelerometerY = new MutableLiveData<>();
-            iLiveAccelerometerY.setValue(0);
+            iLiveAccelerometerY.postValue("");
         }
 
         //return the observable variable
         return iLiveAccelerometerY;
     }
 
-    public LiveData<Integer> refreshAccelerometerZ (Context context){
+    public LiveData<String> refreshAccelerometerZ (Context context){
 
         if(iLiveAccelerometerZ == null) {
             //init observable variable
             iLiveAccelerometerZ = new MutableLiveData<>();
-            iLiveAccelerometerZ.setValue(0);
+            iLiveAccelerometerZ.postValue("");
         }
 
         //return the observable variable
@@ -77,6 +78,10 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
     public void stopMessaging(Context context){
         //tell the repository to stop the service
         repository.stopService(context);
+    }
+
+    public void sendMessage(String message){
+        repository.sendMessage(message);
     }
 
     /*-------------------------- Repository Callbacks -----------------------------*/
@@ -96,15 +101,15 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
             if (subStrings[0].equals(Constants.PROTOCOL_ACCELEROMETER)) {
                 switch (subStrings[1]) {
                     case Constants.PROTOCOL_ACCELEROMETER_X:
-                        iLiveAccelerometerX.postValue(valueOf(subStrings[2]));
+                        iLiveAccelerometerX.postValue(subStrings[2]);
                         break;
 
                     case Constants.PROTOCOL_ACCELEROMETER_Y:
-                        iLiveAccelerometerY.postValue(valueOf(subStrings[2]));
+                        iLiveAccelerometerY.postValue(subStrings[2]);
                         break;
 
                     case Constants.PROTOCOL_ACCELEROMETER_Z:
-                        iLiveAccelerometerZ.postValue(valueOf(subStrings[2]));
+                        iLiveAccelerometerZ.postValue(subStrings[2]);
                         break;
 
                 }

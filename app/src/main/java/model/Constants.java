@@ -24,6 +24,10 @@ public class Constants {
     public static final int GEAR_MAX = 3;
     public static final String GEAR_CHANGE = "change gear";
 
+    public static final int DANGER_BUMPER1 = 1;
+    public static final int DANGER_BUMPER2 = 2;
+    public static final int DANGER_US = 4;
+
     public static final int GYRO_MAX_FORWARD = 2;
     public static final int GYRO_MAX_SOFT = 6;
     public static final int GYRO_MAX_HARD = 10;
@@ -39,7 +43,7 @@ public class Constants {
 
     public static final float PREDICTOR_MIN_SCORE = 1;
 
-    public static final int[] VELOCITY = {0,50,100};
+    public static final int[] VELOCITY = {0,40,80,120};
 
     public static final String PROTOCOL_BRAKE = "brake";
     public static final String PROTOCOL_THROTTLE = "throttle";
@@ -66,7 +70,7 @@ public class Constants {
     public static final String LOG_TITLE = "LOG REGISTER" + '\n' + '\n';
     public static final int INPUT_BYTES = 5000;
     public static final String MOBIL_IP = "192.168.1.48";
-    public static final String ARDUINO_IP = "192.168.1.139"; //PC
+    public static final String ARDUINO_IP = "192.168.1.46"; //PC
     public static final int MOBIL_PORT = 10502;
     public static final int ARDUINO_PORT = 10501; //PC
 

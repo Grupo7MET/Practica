@@ -71,7 +71,6 @@ public class CommunicationService extends Service {
     }
 
     public static void writeMessage(String msg){
-        //TODO change kind of message to send
         sendMessage(msg);
     }
 

@@ -23,7 +23,6 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     //observable String variable
     private MutableLiveData<String> sLiveTemperature;
     private MutableLiveData<Integer> iDanger; //1 if manual, 0 if auto
-    private boolean currentManual;
 
     private static String sMessages;
 
@@ -36,7 +35,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     }
 
     /**
-     * Keeps the logs updated
+     * Keeps the variables updated
      * @param context
      * @return
      */
@@ -51,7 +50,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         if(sLiveTemperature == null) {
             //init observable variable
             sLiveTemperature = new MutableLiveData<>();
-            sLiveTemperature.setValue("Temperature");
+            sLiveTemperature.postValue("Temperature");
         }
 
         repository.startService(context);
@@ -64,7 +63,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         if(iDanger == null) {
             //init observable variable
             iDanger = new MutableLiveData<>();
-            iDanger.setValue(0);
+            iDanger.postValue(0);
         }
 
         //returns the observable variable
@@ -90,6 +89,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     public void onIncomingMessage (String msg) {
         //Assign value for the temperature only if it is for me
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
 
         if(subStrings.length > 1) {
             if (subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {

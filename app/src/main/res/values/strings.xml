@@ -13,6 +13,7 @@
     <string name="rLigthsOn">Turn lights on</string>
     <string name="rLigthsOff">Turn lights off</string>
     <string name="rVelocity">Velocity</string>
+    <string name="rVelocityValue">0 km/h</string>
     <string name="rThrottle">Throttle</string>
     <string name="rGearDown">-</string>
     <string name="rGearUp">+</string>

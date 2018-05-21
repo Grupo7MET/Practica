@@ -23,14 +23,10 @@ import static model.CommunicationService.serviceCallbacks;
 public class CommunicationAsyncTask {
 
     static String dataToSend;
-    static String dataToSend2;
-    static String dataToSend3;
 
     private static boolean txIsOn,rxIsOn;
 
     private static TxTask txTask;
-    //private static RxTask rxTask;
-
 
     /**
      * Executes when data is received.
@@ -105,8 +101,6 @@ public class CommunicationAsyncTask {
         txIsOn = false;
         rxIsOn = false;
         dataToSend = null;
-        dataToSend2 = null;
-        dataToSend3 = null;
     }
 
     /**
@@ -115,12 +109,11 @@ public class CommunicationAsyncTask {
      */
     private static class TxTask extends AsyncTask<Void, Void, Void> {
 
-
         @Override
         protected Void doInBackground(Void... voids) {
             if (!isCancelled() && txIsOn){
                 try {
-                    //Send kind of Message 1
+                    //Send the UDP message
                     if (dataToSend != null) {
                         byte[] msg = dataToSend.getBytes();
                         DatagramPacket dataPkt = new DatagramPacket(msg, msg.length, getByName(Constants.ARDUINO_IP), Constants.ARDUINO_PORT);
@@ -129,7 +122,7 @@ public class CommunicationAsyncTask {
                         dataSocket.send(dataPkt);
                         dataSocket.close();
                         if (serviceCallbacks != null) {
-                            //msg is sent to ViewModel
+                            //msg is sent to ViewModel (for LOG activity)
                             serviceCallbacks.txMessage(dataToSend);
                         }
                     }
@@ -145,24 +138,5 @@ public class CommunicationAsyncTask {
             txIsOn = false;
             return null;
         }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            /*
-            if (txIsOn) {
-                //Send a message every 5 seconds (as specified on the statement)
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-
-                        txTask = new TxTask();
-                        txTask.execute();
-                    }
-                };
-                Timer timer = new Timer();
-                timer.schedule(timerTask, Constants.TIME_BETWEEN_MESSAGES);
-            }*/
-        }
-
     }
 }
