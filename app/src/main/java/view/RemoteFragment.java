@@ -103,11 +103,11 @@ public class RemoteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         manual = false;
+        lights = constants.PROTOCOL_LIGHTS_ON;
         initViewModel();
         bindViews(v);
         moving = false;
         gear = constants.GEAR_INIT;
-        lights = constants.PROTOCOL_LIGHTS_OFF;
         curve = "";
         viewModel.sendMessage(constants.SENDING_PROTOCOL_REMOTE + Integer.toString(convertGear(gear)));
         return v;
@@ -335,7 +335,7 @@ public class RemoteFragment extends Fragment {
         lightsOn = new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean msg) {
-                if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
+                if(lights.equals(constants.PROTOCOL_LIGHTS_OFF)){
                     btnLights.setText(R.string.rLigthsOff);
                     lights = constants.PROTOCOL_LIGHTS_ON;
                 }else{
@@ -373,6 +373,10 @@ public class RemoteFragment extends Fragment {
         };
         viewModel.refreshManual(getContext()).observe(this, liveManual);
 
+        /**
+         * Packets are analyzed and sends a packet to the robot if it is needed to change anything
+         * (if any packet was lost)
+         */
         packet = new Observer<RemotePacket>() {
             @Override
             public void onChanged(@Nullable RemotePacket msg) {
@@ -386,6 +390,8 @@ public class RemoteFragment extends Fragment {
                 }
 
                 if(!lights.equals(msg.getLights())){
+                    Log.e("mio", lights);
+                    Log.e("rx", msg.getLights());
                     viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
                 }
 
