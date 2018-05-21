@@ -50,6 +50,7 @@ public class RemoteFragment extends Fragment {
     private boolean manual;
     private String lights;
     private float readValue;
+    private boolean moving;
     /**
      * danger represents in 3 bits the possible dangers
      * Weights:
@@ -86,11 +87,12 @@ public class RemoteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_remote,container,false);
         initViewModel();
         bindViews(v);
+        moving = false;
         gear = constants.GEAR_INIT;
         lights = constants.PROTOCOL_LIGHTS_OFF;
         manual = true;
         curve = "";
-        viewModel.sendMessage(constants.PROTOCOL_REMOTE);
+        viewModel.sendMessage(constants.SENDING_PROTOCOL_REMOTE + Integer.toString(convertGear(gear)));
         return v;
     }
 
@@ -144,6 +146,19 @@ public class RemoteFragment extends Fragment {
                     if (prediction.score > constants.PREDICTOR_MIN_SCORE) {
                         // Show the spell
                         Toast.makeText(getContext(), prediction.name, Toast.LENGTH_SHORT).show();
+                        switch (prediction.name){
+                            case "Circle":
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_CIRCLE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
+                                break;
+
+                            case "Square":
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_SQUARE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
+                                break;
+
+                            case "Triangle":
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_TRIANGLE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
+                                break;
+                        }
                     }
                 }
             }
@@ -168,29 +183,39 @@ public class RemoteFragment extends Fragment {
                     //Returns 0 when phone is horizontal and -9.81/9.81 when vertical
                     //Depending on the rotation, we get some sort of directions
                     if (readValue > -constants.GYRO_MAX_FORWARD && readValue < constants.GYRO_MAX_FORWARD) {
-                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_FORWARD)) {
-                            curve = constants.PROTOCOL_MOVEMENT_FORWARD;
-                            viewModel.sendMessage(curve);
+                        if (!curve.equals(constants.SENDING_PROTOCOL_MOVEMENT_FORWARD)) {
+                            curve = constants.SENDING_PROTOCOL_MOVEMENT_FORWARD;
+                            if (moving) {
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_FORWARD + Integer.toString(convertGear(gear)));
+                            }
                         }
                     } else if (readValue < -constants.GYRO_MAX_FORWARD && readValue > -constants.GYRO_MAX_SOFT) {
-                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_SOFT_LEFT)) {
-                            curve = constants.PROTOCOL_MOVEMENT_SOFT_LEFT;
-                            viewModel.sendMessage(curve);
+                        if (!curve.equals(constants.SENDING_PROTOCOL_MOVEMENT_SOFT_LEFT)) {
+                            curve = constants.SENDING_PROTOCOL_MOVEMENT_SOFT_LEFT;
+                            if (moving) {
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_SOFT_LEFT + Integer.toString(convertGear(gear)));
+                            }
                         }
                     } else if (readValue < -constants.GYRO_MAX_SOFT && readValue > -constants.GYRO_MAX_HARD) {
-                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_HARD_LEFT)) {
-                            curve = constants.PROTOCOL_MOVEMENT_HARD_LEFT;
-                            viewModel.sendMessage(curve);
+                        if (!curve.equals(constants.SENDING_PROTOCOL_MOVEMENT_HARD_LEFT)) {
+                            curve = constants.SENDING_PROTOCOL_MOVEMENT_HARD_LEFT;
+                            if (moving) {
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_HARD_LEFT + Integer.toString(convertGear(gear)));
+                            }
                         }
                     } else if (readValue < constants.GYRO_MAX_SOFT && readValue > constants.GYRO_MAX_FORWARD) {
-                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_SOFT_RIGHT)) {
-                            curve = constants.PROTOCOL_MOVEMENT_SOFT_RIGHT;
-                            viewModel.sendMessage(curve);
+                        if (!curve.equals(constants.SENDING_PROTOCOL_MOVEMENT_SOFT_RIGHT)) {
+                            curve = constants.SENDING_PROTOCOL_MOVEMENT_SOFT_RIGHT;
+                            if (moving) {
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_SOFT_RIGHT + Integer.toString(convertGear(gear)));
+                            }
                         }
                     } else if (readValue < constants.GYRO_MAX_HARD && readValue > constants.GYRO_MAX_SOFT) {
-                        if (!curve.equals(constants.PROTOCOL_MOVEMENT_HARD_RIGHT)) {
-                            curve = constants.PROTOCOL_MOVEMENT_HARD_RIGHT;
-                            viewModel.sendMessage(curve);
+                        if (!curve.equals(constants.SENDING_PROTOCOL_MOVEMENT_HARD_RIGHT)) {
+                            curve = constants.SENDING_PROTOCOL_MOVEMENT_HARD_RIGHT;
+                            if (moving) {
+                                viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_HARD_RIGHT + Integer.toString(convertGear(gear)));
+                            }
                         }
                     }
                 }
@@ -208,10 +233,12 @@ public class RemoteFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if (manual) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        viewModel.sendMessage(constants.PROTOCOL_BRAKE);
+                        moving = false;
+                        viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_FORWARD + Integer.toString(convertGear(gear)));
                     }
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        viewModel.sendMessage(constants.PROTOCOL_THROTTLE);
+                        moving = true;
+                        if (gear != 0) viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_FORWARD + Integer.toString(convertGear(gear)));
                     }
                 }
                 return false;
@@ -224,7 +251,7 @@ public class RemoteFragment extends Fragment {
                 btnAuto.setEnabled(false);
                 btnManual.setEnabled(true);
                 manual = false;
-                viewModel.sendMessage(constants.PROTOCOL_AUTOMATIC);
+                viewModel.sendMessage(constants.SENDING_PROTOCOL_AUTOMATIC + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
             }
         });
 
@@ -234,7 +261,7 @@ public class RemoteFragment extends Fragment {
                 btnAuto.setEnabled(true);
                 btnManual.setEnabled(false);
                 manual = true;
-                viewModel.sendMessage(constants.PROTOCOL_MANUAL);
+                viewModel.sendMessage(constants.SENDING_PROTOCOL_MANUAL + Integer.toString(convertGear(gear)));
             }
         });
 
@@ -242,11 +269,11 @@ public class RemoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(btnLights.getText().toString().equals(getContext().getString(R.string.rLigthsOn))){
-                    viewModel.sendMessage(constants.PROTOCOL_LIGHTS_ON);
+                    viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
                     btnLights.setText(R.string.rLigthsOff);
                     lights = constants.PROTOCOL_LIGHTS_ON;
                 }else{
-                    viewModel.sendMessage(constants.PROTOCOL_LIGHTS_OFF);
+                    viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
                     btnLights.setText(R.string.rLigthsOn);
                     lights = constants.PROTOCOL_LIGHTS_OFF;
                 }
@@ -258,8 +285,12 @@ public class RemoteFragment extends Fragment {
             public void onClick(View v) {
                 if (gear > -constants.GEAR_MAX && manual) {
                     gear--;
-                    viewModel.sendMessage(constants.PROTOCOL_GEAR_CHANGE + Integer.toString(gear));
-                    tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
+                    if (moving) viewModel.sendMessage(curve + Integer.toString(convertGear(gear)));
+                    if (gear < 0){
+                        tvVelocityValue.setText("-" + Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
+                    }else{
+                        tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
+                    }
                 }
             }
         });
@@ -269,7 +300,7 @@ public class RemoteFragment extends Fragment {
             public void onClick(View v) {
                 if (gear < constants.GEAR_MAX && manual) {
                     gear++;
-                    viewModel.sendMessage(constants.PROTOCOL_GEAR_CHANGE + Integer.toString(gear));
+                    if (moving) viewModel.sendMessage(curve + Integer.toString(convertGear(gear)));
                     tvVelocityValue.setText(Integer.toString(constants.VELOCITY[abs(gear)]) + " km/h");
                 }
             }
@@ -294,34 +325,24 @@ public class RemoteFragment extends Fragment {
             @Override
             public void onChanged(@Nullable RemotePacket msg) {
 
-                Log.e("packet",msg.getMovement()+"_"+msg.getVelocity()+"_"+msg.getLights()+"_"+msg.getManual());
-                Log.e("packet",curve+"_"+constants.VELOCITY[abs(gear)]+"_"+lights+"_"+manual);
-                if(!curve.equals(msg.getMovement())){
-                    viewModel.sendMessage(curve);
-                    Log.e("error","curve");
+                if(!curve.equals(msg.getMovement()) && moving){
+                    viewModel.sendMessage(curve + Integer.toString(convertGear(gear)));
                 }
 
-                if(gear != Integer.valueOf(msg.getVelocity())){
-                    viewModel.sendMessage(constants.PROTOCOL_GEAR_CHANGE + Integer.toString(gear));
-                    Log.e("error","gear");
+                if(convertGear(gear) != Integer.valueOf(msg.getVelocity())){
+                    viewModel.sendMessage(curve + Integer.toString(convertGear(gear)));
                 }
 
                 if(!lights.equals(msg.getLights())){
-                    if(lights.equals(constants.PROTOCOL_LIGHTS_ON)) {
-                        viewModel.sendMessage(constants.PROTOCOL_LIGHTS_ON);
-                    }else{
-                        viewModel.sendMessage(constants.PROTOCOL_LIGHTS_OFF);
-                    }
-                    Log.e("error","lights");
+                    viewModel.sendMessage(constants.SENDING_PROTOCOL_FRONT_LIGHTS + Integer.toString(convertGear(gear)));
                 }
 
                 if(manual != msg.getManual()){
                     if(manual){
-                        viewModel.sendMessage(constants.PROTOCOL_MANUAL);
+                        viewModel.sendMessage(constants.SENDING_PROTOCOL_MANUAL + Integer.toString(convertGear(gear)));
                     }else{
-                        viewModel.sendMessage(constants.PROTOCOL_AUTOMATIC);
+                        viewModel.sendMessage(constants.SENDING_PROTOCOL_AUTOMATIC + Integer.toString(convertGear(gear)));
                     }
-                    Log.e("error","manual");
                 }
             }
         };
@@ -357,6 +378,18 @@ public class RemoteFragment extends Fragment {
         viewModel.refreshDanger(getContext()).observe(this, danger);
     }
 
+    public int convertGear(int g){
+        int a = 0;
+
+        if(!moving) a = 0;
+        else if(g >= 0) a = g;
+        else if(g == -1) a = 4;
+        else if (g == -2) a = 5;
+        else if (g == -3) a = 6;
+
+        return a;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -371,8 +404,8 @@ public class RemoteFragment extends Fragment {
 
     @Override
     public void onStop() {
+        viewModel.sendMessage(constants.SENDING_PROTOCOL_BACK_TO_MENU + Integer.toString(convertGear(gear)));
         viewModel.stopMessaging(getContext());
-        viewModel.sendMessage(constants.MODE_MENU);
         getActivity().finish();
         super.onStop();
     }

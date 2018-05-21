@@ -45,7 +45,7 @@ public class AccelerometerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_accelerometer,container,false);
         initViewModel();
         bindViews(v);
-        viewModel.sendMessage(Constants.MODE_REMOTE);
+        viewModel.sendMessage(Constants.SENDING_PROTOCOL_ACCELEROMETER);
         return v;
     }
 
@@ -108,8 +108,8 @@ public class AccelerometerFragment extends Fragment {
 
     @Override
     public void onStop() {
+        viewModel.sendMessage(Constants.SENDING_PROTOCOL_BACK_TO_MENU);
         viewModel.stopMessaging(getContext());
-        viewModel.sendMessage(Constants.MODE_MENU);
         getActivity().finish();
         super.onStop();
     }

@@ -32,14 +32,30 @@ public class Constants {
     public static final int GYRO_MAX_SOFT = 6;
     public static final int GYRO_MAX_HARD = 10;
 
-    public static final String PROTOCOL_LIGHTS_OFF = "OFF";
-    public static final String PROTOCOL_LIGHTS_ON = "ON";
+    public static final String PROTOCOL_LIGHTS_OFF = "0";
+    public static final String PROTOCOL_LIGHTS_ON = "1";
 
     public static final String PROTOCOL_MOVEMENT_FORWARD = "FORWARD";
     public static final String PROTOCOL_MOVEMENT_SOFT_LEFT = "SOFTLEFT";
     public static final String PROTOCOL_MOVEMENT_HARD_LEFT = "HARDLEFT";
     public static final String PROTOCOL_MOVEMENT_SOFT_RIGHT = "SOFTRIGHT";
     public static final String PROTOCOL_MOVEMENT_HARD_RIGHT = "HARDRIGHT";
+
+    public static final String SENDING_PROTOCOL_MOVEMENT_FORWARD = "a";
+    public static final String SENDING_PROTOCOL_MOVEMENT_SOFT_RIGHT = "b";
+    public static final String SENDING_PROTOCOL_MOVEMENT_HARD_RIGHT = "c";
+    public static final String SENDING_PROTOCOL_MOVEMENT_SOFT_LEFT = "d";
+    public static final String SENDING_PROTOCOL_MOVEMENT_HARD_LEFT = "e";
+    public static final String SENDING_PROTOCOL_MOVEMENT_SQUARE = "f";
+    public static final String SENDING_PROTOCOL_MOVEMENT_CIRCLE = "g";
+    public static final String SENDING_PROTOCOL_MOVEMENT_TRIANGLE = "h";
+    public static final String SENDING_PROTOCOL_FRONT_LIGHTS = "i";
+    public static final String SENDING_PROTOCOL_AUTOMATIC = "j";
+    public static final String SENDING_PROTOCOL_MANUAL = "k";
+    public static final String SENDING_PROTOCOL_REMOTE = "l";
+    public static final String SENDING_PROTOCOL_ACCELEROMETER = "m";
+    public static final String SENDING_PROTOCOL_BACK_TO_MENU = "q";
+    public static final String SENDING_PROTOCOL_VELOCITY_MEDIUM = "2";
 
     public static final float PREDICTOR_MIN_SCORE = 1;
 
@@ -49,7 +65,7 @@ public class Constants {
     public static final String PROTOCOL_THROTTLE = "throttle";
     public static final String PROTOCOL_AUTOMATIC = "automatic";
     public static final String PROTOCOL_MANUAL = "manual";
-    public static final String PROTOCOL_REMOTE = "rem";
+    public static final String PROTOCOL_REMOTE = "remote";
     public static final String PROTOCOL_REMOTE_TEMPERATURE = "temperature";
     public static final String PROTOCOL_REMOTE_DANGER = "danger";
 

@@ -105,34 +105,19 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
         //Assign value for the temperature only if it is for me
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
 
-        if(subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {
+        if(subStrings[0].equals(Constants.SENDING_PROTOCOL_REMOTE)) {
             parseInfo(msg);
             checkInfo(packet);
         }
-        /*
-        if(subStrings.length > 1) {
-            if (subStrings[0].equals(Constants.PROTOCOL_REMOTE)) {
-                switch (subStrings[1]) {
-                    case Constants.PROTOCOL_REMOTE_TEMPERATURE:
-                        sLiveTemperature.postValue(subStrings[2]);
-                        break;
-
-                    case Constants.PROTOCOL_REMOTE_DANGER:
-                        iDanger.postValue(Integer.valueOf(subStrings[2]));
-                        break;
-
-                }
-            }
-        }*/
     }
 
     public void parseInfo(String info){
         subStrings = info.split(Constants.PROTOCOL_SPLIT);
 
-        if(subStrings[0].equals(Constants.PROTOCOL_REMOTE)){
+        if(subStrings[0].equals(Constants.SENDING_PROTOCOL_REMOTE)){
             packet = new RemotePacket(subStrings[1],subStrings[2],subStrings[3],subStrings[4],subStrings[5],subStrings[6]);
         }else{
-            sendMessage(Constants.PROTOCOL_REMOTE);
+            sendMessage(Constants.SENDING_PROTOCOL_REMOTE);
         }
 
     }

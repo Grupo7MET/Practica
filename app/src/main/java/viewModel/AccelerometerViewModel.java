@@ -96,24 +96,10 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
         //We continuously refresh both variables
 
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
-
-        if(subStrings.length > 1) {
-            if (subStrings[0].equals(Constants.PROTOCOL_ACCELEROMETER)) {
-                switch (subStrings[1]) {
-                    case Constants.PROTOCOL_ACCELEROMETER_X:
-                        iLiveAccelerometerX.postValue(subStrings[2]);
-                        break;
-
-                    case Constants.PROTOCOL_ACCELEROMETER_Y:
-                        iLiveAccelerometerY.postValue(subStrings[2]);
-                        break;
-
-                    case Constants.PROTOCOL_ACCELEROMETER_Z:
-                        iLiveAccelerometerZ.postValue(subStrings[2]);
-                        break;
-
-                }
-            }
+        if (subStrings[0].equals(Constants.SENDING_PROTOCOL_ACCELEROMETER)) {
+            iLiveAccelerometerX.postValue(subStrings[1]);
+            iLiveAccelerometerY.postValue(subStrings[2]);
+            iLiveAccelerometerZ.postValue(subStrings[3]);
         }
     }
 

@@ -1,5 +1,7 @@
 package model;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 /**
  * Created by Manel on 21/5/18.
  */
@@ -63,7 +65,7 @@ public class RemotePacket {
     }
 
     public boolean getManual() {
-        if(this.manual.equals("MANUAL")){
+        if(this.manual.equals(Constants.SENDING_PROTOCOL_MANUAL)){
             return true;
         }else{
             return false;
