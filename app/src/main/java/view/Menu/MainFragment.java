@@ -1,6 +1,5 @@
-package view;
+package view.Menu;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.abmcr.robot.R;
+
+import view.Accelerometer.AccelerometerActivity;
+import view.Logs.CommunicationActivity;
+import view.Labyrinth.LabyrinthActivity;
+import view.Remote.RemoteActivity;
 
 /**
  * Class that creates the view and assign all the visual components and create the button listeners
@@ -59,7 +63,6 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), RemoteActivity.class);
-                intent.putExtra("repository", 2);
                 startActivity(intent);
             }
         });

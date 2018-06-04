@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="view.SplashActivity"
+        <activity android:name="view.Splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,28 +22,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="view.MainActivity"
-            android:parentActivityName="view.MainActivity"
+        <activity android:name="view.Menu.MainActivity"
+            android:parentActivityName="view.Menu.MainActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="view.RemoteActivity"
-            android:parentActivityName="view.RemoteActivity"
+        <activity android:name="view.Remote.RemoteActivity"
+            android:parentActivityName="view.Remote.RemoteActivity"
             android:screenOrientation="landscape"/>
 
-        <activity android:name="view.AccelerometerActivity"
-            android:parentActivityName="view.AccelerometerActivity"
+        <activity android:name="view.Accelerometer.AccelerometerActivity"
+            android:parentActivityName="view.Accelerometer.AccelerometerActivity"
             android:screenOrientation="landscape"/>
 
-        <activity android:name="view.LabyrinthActivity"
-            android:parentActivityName="view.LabyrinthActivity"
+        <activity android:name="view.Labyrinth.LabyrinthActivity"
+            android:parentActivityName="view.Labyrinth.LabyrinthActivity"
             android:screenOrientation="landscape"/>
 
-        <activity android:name="view.CommunicationActivity"
-            android:parentActivityName="view.CommunicationActivity"
+        <activity android:name="view.Logs.CommunicationActivity"
+            android:parentActivityName="view.Logs.CommunicationActivity"
             android:screenOrientation="portrait"/>
 
         <service
-            android:name="model.CommunicationService"
+            android:name="model.Communication.CommunicationService"
             android:label="@string/app_name" />
 
     </application>

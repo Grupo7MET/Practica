@@ -1,4 +1,4 @@
-package model;
+package model.Communication;
 
 import android.app.Service;
 import android.content.Intent;
@@ -9,8 +9,10 @@ import android.support.annotation.Nullable;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import static model.CommunicationAsyncTask.initCommunications;
-import static model.CommunicationAsyncTask.stopCommunications;
+import model.Constants;
+
+import static model.Communication.CommunicationAsyncTask.initCommunications;
+import static model.Communication.CommunicationAsyncTask.stopCommunications;
 
 /**
  * Class that allows the communication with the service
@@ -66,20 +68,12 @@ public class CommunicationService extends Service {
     }
 
     /**
-     * @sendMessage Prepares the data to send on the variable
-     * @param msg is the message to send
-     */
-    public static void sendMessage(String msg){
-        CommunicationAsyncTask.dataToSend = msg;
-        CommunicationAsyncTask.sendMessageUDP();
-    }
-
-    /**
-     * Method used from the Repository to send a message to outside
+     * Method used from the Repository to send a message to outside.
+     * Prepares the data to send on the variable
      * @param msg is the message to send
      */
     public static void writeMessage(String msg){
-        sendMessage(msg);
+        CommunicationAsyncTask.sendMessageUDP(msg);
     }
 
     /*-------------------------- Service Binder -----------------------------*/
@@ -100,6 +94,6 @@ public class CommunicationService extends Service {
      */
     public interface CommunicationServiceInterface{
         void rxMessage(String msg);
-        void txMessage(String msg);
+        //void txMessage(String msg);
     }
 }

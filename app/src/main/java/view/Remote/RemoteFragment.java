@@ -1,4 +1,4 @@
-package view;
+package view.Remote;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -26,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import model.Constants;
-import model.RemotePacket;
+import model.Communication.RemotePacket;
 import viewModel.RemoteViewModel;
 import static android.content.Context.SENSOR_SERVICE;
 import static java.lang.Math.abs;
@@ -35,6 +35,16 @@ import static java.lang.Math.abs;
  * Class that creates the view and assign all the visual components.
  * Create the button listeners, manage the pattern detection and the gyroscope
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
+ */
+
+/**
+ * USED PROTOCOL:
+ * At starting the program, the robot already knows that we are in the menu mode.
+ * When anything changes, we send a packet with the proper PROTOCOL_MODE + a number. i.e. r0
+ * When we are in a remote mode, we send packets when something significant changes (just if we can move with a
+ * gear != 0, or if we are in manual mode.
+ * Both the lights and manual/auto mode are changed just when the robot answers with an acknowledge packet.
+ * It is always sent a PROTOCOL_MOVEMENT + a number. This number is the current gear.
  */
 
 public class RemoteFragment extends Fragment {
@@ -165,15 +175,15 @@ public class RemoteFragment extends Fragment {
                         // Show the spell
                         Toast.makeText(getContext(), prediction.name, Toast.LENGTH_SHORT).show();
                         switch (prediction.name){
-                            case "Circle":
+                            case Constants.PREDICTION_CIRCLE:
                                 viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_CIRCLE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
                                 break;
 
-                            case "Square":
+                            case Constants.PREDICTION_SQUARE:
                                 viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_SQUARE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
                                 break;
 
-                            case "Triangle":
+                            case Constants.PREDICTION_TRIANGLE:
                                 viewModel.sendMessage(constants.SENDING_PROTOCOL_MOVEMENT_TRIANGLE + constants.SENDING_PROTOCOL_VELOCITY_MEDIUM);
                                 break;
                         }
@@ -415,18 +425,18 @@ public class RemoteFragment extends Fragment {
                     ivDangerUS.setVisibility(View.INVISIBLE);
                 }
 
-                if (aux >= constants.DANGER_BUMPER1) {
-                    ivDangerBumper1.setVisibility(View.VISIBLE);
-                    aux -= constants.DANGER_BUMPER1;
-                }else{
-                    ivDangerBumper1.setVisibility(View.INVISIBLE);
-                }
-
                 if (aux >= constants.DANGER_BUMPER2) {
                     ivDangerBumper2.setVisibility(View.VISIBLE);
                     aux -= constants.DANGER_BUMPER2;
                 }else{
                     ivDangerBumper2.setVisibility(View.INVISIBLE);
+                }
+
+                if (aux >= constants.DANGER_BUMPER1) {
+                    ivDangerBumper1.setVisibility(View.VISIBLE);
+                    aux -= constants.DANGER_BUMPER1;
+                }else{
+                    ivDangerBumper1.setVisibility(View.INVISIBLE);
                 }
             }
         };

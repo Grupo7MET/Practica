@@ -1,46 +1,40 @@
-package view;
+package view.Accelerometer;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.abmcr.robot.R;
 
 /**
- * Initializes the main fragment
+ * Initializes the accelerometer fragment
  * Authors: Cristina Abad, Manel Benavides, Miguel Martinez
  */
 
-public class MainActivity extends AppCompatActivity {
-
-    private String MAIN_FRAGMENT = "MAIN_FRAGMENT";
+public class AccelerometerActivity extends AppCompatActivity {
+    private String ACCELEROMETER_FRAGMENT = "ACCELEROMETER_FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_accelerometer);
 
         initFragment();
     }
 
     private void initFragment(){
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(MAIN_FRAGMENT);
+        Fragment fragment = manager.findFragmentByTag(ACCELEROMETER_FRAGMENT);
         if(fragment == null){
-            fragment = MainFragment.newInstance();
+            fragment = AccelerometerFragment.newInstance();
         }
 
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-        transaction.replace(R.id.activity_main_container,fragment,MAIN_FRAGMENT);
+        transaction.replace(R.id.activity_main_container,fragment,ACCELEROMETER_FRAGMENT);
         transaction.commit();
 
     }
 }
-

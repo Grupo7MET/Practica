@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
 import model.Constants;
-import model.Repository;
+import model.Communication.Repository;
 
 
 /**
@@ -22,8 +22,7 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
     //observable String variable
     private MutableLiveData<String> sLiveMessages;
 
-    //all messages
-    private static String sMessages;
+    private Context context;
 
     //Constructor
     public LogViewModel(){
@@ -42,12 +41,9 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
             sLiveMessages = new MutableLiveData<>();
         }
 
-        if (sMessages == null) {
-            //init variable
-            sMessages = Constants.LOG_TITLE;
-            sLiveMessages.postValue(sMessages);
-        }
+        sLiveMessages.postValue(repository.readFileLog(context));
 
+        this.context = context;
         //tells the repository to start the service
         repository.startService(context);
         //return the observable variable
@@ -69,10 +65,10 @@ public class LogViewModel extends ViewModel implements Repository.RepositoryCall
     public void onIncomingMessage (String msg) {
         //post value to the view
         //We continuously refresh both variables
-        sMessages = sMessages + msg + '\n' + '\n';
-        sLiveMessages.postValue(sMessages);
+        repository.writeFileLog(context,msg,Constants.PROTOCOL_ARDUINO);
 
-        //TODO aqui tratamos la string (el switch)
+        sLiveMessages.postValue(repository.readFileLog(context));
+
     }
 
     @Override

@@ -6,8 +6,8 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
 import model.Constants;
-import model.RemotePacket;
-import model.Repository;
+import model.Communication.RemotePacket;
+import model.Communication.Repository;
 
 
 /**
@@ -19,6 +19,8 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
 
     //our repository
     private Repository repository;
+
+    private Context context;
 
     /**
      * Live data shared with the fragment
@@ -54,6 +56,8 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
             sLiveTemperature = new MutableLiveData<>();
             sLiveTemperature.postValue("Temperature");
         }
+
+        this.context = context;
 
         repository.startService(context);
         //returns the observable variable
@@ -120,6 +124,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
      * @param message is the message to send
      */
     public void sendMessage(String message){
+        repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
         repository.sendMessage(message);
     }
 
@@ -132,6 +137,7 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
     @Override
     public void onIncomingMessage (String msg) {
 
+        repository.writeFileLog(context, msg,Constants.PROTOCOL_ARDUINO);
         subStrings = msg.split(Constants.PROTOCOL_SPLIT);
 
         if(subStrings[0].equals(Constants.SENDING_PROTOCOL_REMOTE)) {

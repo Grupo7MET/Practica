@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
 import model.Constants;
-import model.Repository;
+import model.Communication.Repository;
 
 import static java.lang.Integer.valueOf;
 
@@ -27,6 +27,8 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
 
     private static String[] subStrings;
 
+    private Context context;
+
     //Constructor
     public AccelerometerViewModel(){
         repository = new Repository(this);
@@ -44,6 +46,8 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
             iLiveAccelerometerX = new MutableLiveData<>();
             iLiveAccelerometerX.postValue("");
         }
+
+        this.context = context;
 
         //tells the repository to start the service
         repository.startService(context);
@@ -81,6 +85,7 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
     }
 
     public void sendMessage(String message){
+        repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
         repository.sendMessage(message);
     }
 
@@ -100,6 +105,8 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
             iLiveAccelerometerY.postValue(subStrings[2]);
             iLiveAccelerometerZ.postValue(subStrings[3]);
         }
+
+        repository.writeFileLog(context,msg,Constants.PROTOCOL_ARDUINO);
     }
 
     @Override

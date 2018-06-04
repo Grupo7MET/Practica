@@ -1,8 +1,8 @@
-package view;
+package view.Splash;
 
 import android.animation.ObjectAnimator;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 
 import com.example.abmcr.robot.R;
 import model.Constants;
+import view.Menu.MainActivity;
+import viewModel.SplashViewModel;
 
 /**
  * Class that creates the view and keeps it visible for splash duration
@@ -24,12 +26,14 @@ import model.Constants;
 public class SplashActivity extends AppCompatActivity {
 
     Animation scale;
+    private SplashViewModel viewModel;
     ProgressBar progressBar;
     ImageView splash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        initViewModel();
         scale = new AnimationUtils().loadAnimation(getApplicationContext(), R.anim.scale);
         splash = (ImageView)findViewById(R.id.splash);
         splash.startAnimation(scale);
@@ -42,6 +46,12 @@ public class SplashActivity extends AppCompatActivity {
         animation.setDuration(Constants.ANIMATION_DURATION);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.start();
+    }
+
+    private void initViewModel(){
+
+        viewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
+        viewModel.clearLogsFile(getApplicationContext());
     }
 
     /**

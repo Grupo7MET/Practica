@@ -16,6 +16,9 @@ public class Constants {
     //Main Menu
     public static final String PROTOCOL_SPLIT = "_";
 
+    //Log Mode
+    public static final String FILE_NAME = "logs.txt";
+
     //Remote Mode
     public static final int GEAR_INIT = 0;
     public static final int GEAR_MAX = 3;
@@ -27,6 +30,10 @@ public class Constants {
     public static final int GYRO_MAX_FORWARD = 2;
     public static final int GYRO_MAX_SOFT = 6;
     public static final int GYRO_MAX_HARD = 10;
+
+    public static final String PREDICTION_SQUARE = "Square";
+    public static final String PREDICTION_CIRCLE = "Circle";
+    public static final String PREDICTION_TRIANGLE = "Triangle";
 
     /**
      * All the constants used on the communication protocol to send/receive
@@ -62,7 +69,6 @@ public class Constants {
     public static final int[] VELOCITY = {0,40,80,120};
 
     //Labyrinth Mode
-    public static final String MODE_LABYRINTH = "LABYRINTH";
 
     public static final int LABYRINTH_NROWS = 5;
     public static final int LABYRINTH_NCOLUMNS = 5;
@@ -72,6 +78,12 @@ public class Constants {
     //LOG
     public static final String LOG_TITLE = "LOG REGISTER" + '\n' + '\n';
     public static final int INPUT_BYTES = 5000;
+    public static final String PROTOCOL_ANDROID = "Android";
+    public static final String PROTOCOL_ARDUINO = "Arduino";
+    public static final char PROTOCOL_SPACE = '\n';
+    public static final String PROTOCOL_WHO_ANDROID = " Android says: ";
+    public static final String PROTOCOL_WHO_ROBOT = " Robot says: ";
+
     /**
      * IP and ports for the transmission
      */

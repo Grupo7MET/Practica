@@ -5,8 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
-import model.Constants;
-import model.Repository;
+import model.Communication.Repository;
 
 /**
  * Created by Manel on 9/5/18.

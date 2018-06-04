@@ -1,4 +1,4 @@
-package view;
+package view.Logs;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;

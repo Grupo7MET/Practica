@@ -1,4 +1,4 @@
-package model;
+package model.Communication;
 
 
 import android.os.AsyncTask;
@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import model.Constants;
 
 import static java.net.InetAddress.getByName;
-import static model.CommunicationService.dgSocket;
-import static model.CommunicationService.serviceCallbacks;
+import static model.Communication.CommunicationService.dgSocket;
+import static model.Communication.CommunicationService.serviceCallbacks;
 
 /**
  * Class that executes an AsyncTask to send and receive data
@@ -25,7 +25,7 @@ public class CommunicationAsyncTask {
     /**
      * @dataToSend is the variable that contains the message to send
      */
-    static String dataToSend;
+    private static String dataToSend;
 
     /**
      * variables indicating if a transission or receiving is active
@@ -85,7 +85,8 @@ public class CommunicationAsyncTask {
     /**
      * @sendMessageUDP: Method used to send a packet. Starts a new AsyncTask
      */
-    static void sendMessageUDP(){
+    static void sendMessageUDP(String msg){
+        dataToSend = msg;
         txIsOn = true;
         txTask = new TxTask();
         txTask.execute();
@@ -97,10 +98,11 @@ public class CommunicationAsyncTask {
     static void stopCommunications() {
 
         //Stop both communications
-        if (!txTask.isCancelled()) {
-            txTask.cancel(false);
+        if(txTask != null) {
+            if (!txTask.isCancelled()) {
+                txTask.cancel(false);
+            }
         }
-
         rxTask.interrupt();
         rxTask = null;
 
@@ -130,7 +132,7 @@ public class CommunicationAsyncTask {
                         dataSocket.close();
                         if (serviceCallbacks != null) {
                             //msg is sent to ViewModel (for LOG activity)
-                            serviceCallbacks.txMessage(dataToSend);
+                            //serviceCallbacks.txMessage(dataToSend);
                         }
                     }
 

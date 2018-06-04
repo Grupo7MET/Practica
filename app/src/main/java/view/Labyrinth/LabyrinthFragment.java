@@ -1,7 +1,6 @@
-package view;
+package view.Labyrinth;
 
 import android.graphics.Color;
-import android.hardware.SensorManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

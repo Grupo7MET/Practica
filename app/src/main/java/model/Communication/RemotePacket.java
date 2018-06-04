@@ -1,4 +1,6 @@
-package model;
+package model.Communication;
+
+import model.Constants;
 
 /**
  * Class that enhances a data structure to tidy up all the fields in a Remote Mode packet
