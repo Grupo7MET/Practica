@@ -4,8 +4,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
+import android.util.Log;
 
 import model.Communication.Repository;
+import model.Constants;
 
 /**
  * Created by Manel on 9/5/18.
@@ -17,7 +19,13 @@ public class LabyrinthViewModel extends ViewModel implements Repository.Reposito
     private Repository repository;
 
     //observable String variable
-    private MutableLiveData<String> sLiveMessages;
+    private MutableLiveData<String> sCells, sVerWalls, sHorWalls;
+
+    private Context context;
+    private String prev = "0_4";
+
+    private String vertWalls;
+    private String horWalls;
 
     //all messages
     //private static String sMessages;
@@ -32,23 +40,49 @@ public class LabyrinthViewModel extends ViewModel implements Repository.Reposito
      * @param context
      * @return
      */
-    public LiveData<String> printMessages (Context context){
-/*
-        if(sLiveMessages == null) {
+    public LiveData<String> refreshCells (Context context){
+
+        if(sCells == null) {
             //init observable variable
-            sLiveMessages = new MutableLiveData<>();
+            sCells = new MutableLiveData<>();
+            sCells.postValue("0_4_0_4");
         }
 
-        if (sMessages == null) {
-            //init variable
-            sMessages = Constants.LOG_TITLE;
-            sLiveMessages.postValue(sMessages);
+        this.context = context;
+
+        repository.startService(context);
+
+        return sCells;
+    }
+
+    public LiveData<String> refreshVerWalls (Context context){
+
+        if(sVerWalls == null) {
+            //init observable variable
+            sVerWalls = new MutableLiveData<>();
+            //sWalls.postValue("0_4_0_4");
         }
 
-        //tells the repository to start the service
-        repository.startService(context);*/
-        //return the observable variable
-        return sLiveMessages;
+        this.context = context;
+
+        return sVerWalls;
+    }
+
+    public LiveData<String> refreshHorWalls (Context context){
+
+        if(sHorWalls == null) {
+            //init observable variable
+            sHorWalls = new MutableLiveData<>();
+            //sWalls.postValue("0_4_0_4");
+        }
+
+        this.context = context;
+
+        return sHorWalls;
+    }
+
+    public void sendMessage(String msg){
+        repository.sendMessage(msg);
     }
 
     public void stopMessaging(Context context){
@@ -65,11 +99,153 @@ public class LabyrinthViewModel extends ViewModel implements Repository.Reposito
     @Override
     public void onIncomingMessage (String msg) {
         //post value to the view
-        //We continuously refresh both variables
-        //sMessages = sMessages + msg + '\n' + '\n';
-        //sLiveMessages.postValue(sMessages);
 
-        //TODO aqui tratamos la string (el switch)
+        String[] subStrings;
+        subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
+        if(subStrings[0].equals(Constants.SENDING_PROTOCOL_LABYRINTH)) {
+
+            //Check if it is the end of the labyrinth
+            if(subStrings[1].equals(Constants.PROTOCOL_FINISHED)){
+
+                sCells.postValue(msg.substring(2, msg.length()));
+            }else{
+
+                //We send a string with: prevColumn_prevRow_currentColumn_currentRow
+                sCells.postValue(prev + Constants.PROTOCOL_SPLIT + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5]);
+
+                prev = subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+
+                //Depending on the orientation we can paint the walls
+                paintWalls(msg);
+            }
+        }
+    }
+
+    void paintWalls(String msg){
+        String[] subStrings;
+        subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
+        switch (subStrings[6]){
+            case Constants.PROTOCOL_SOUTH:
+                vertWalls = "";
+                horWalls = "";
+
+                if(subStrings[1].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + (Integer.valueOf(subStrings[4])+1) + Constants.PROTOCOL_SPLIT + Integer.valueOf(subStrings[5]);
+                }
+
+                if(subStrings[2].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + (Integer.valueOf(subStrings[5])+1);
+                }
+
+                if(subStrings[3].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                sVerWalls.postValue(vertWalls);
+                sHorWalls.postValue(horWalls);
+                break;
+
+
+            case Constants.PROTOCOL_NORTH:
+                vertWalls = "";
+                horWalls = "";
+
+                if(subStrings[1].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                if(subStrings[2].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                if(subStrings[3].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + (Integer.valueOf(subStrings[4])+1) + Constants.PROTOCOL_SPLIT + Integer.valueOf(subStrings[5]);
+                }
+
+                sVerWalls.postValue(vertWalls);
+                sHorWalls.postValue(horWalls);
+                break;
+
+
+            case Constants.PROTOCOL_EAST:
+                vertWalls = "";
+                horWalls = "";
+
+                if(subStrings[1].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                if(subStrings[2].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + (Integer.valueOf(subStrings[4])+1) + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                if(subStrings[3].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + (Integer.valueOf(subStrings[5])+1);
+                }
+
+                sVerWalls.postValue(vertWalls);
+                sHorWalls.postValue(horWalls);
+                break;
+
+
+            case Constants.PROTOCOL_WEST:
+                vertWalls = "";
+                horWalls = "";
+
+                if(subStrings[1].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + (Integer.valueOf(subStrings[5])+1);
+                }
+
+                if(subStrings[2].equals("1")){
+                    if(!vertWalls.equals("")) {
+                        vertWalls = vertWalls + "_";
+                    }
+                    vertWalls = vertWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                if(subStrings[3].equals("1")){
+                    if(!horWalls.equals("")) {
+                        horWalls = horWalls + "_";
+                    }
+                    horWalls = horWalls + subStrings[4] + Constants.PROTOCOL_SPLIT + subStrings[5];
+                }
+
+                sVerWalls.postValue(vertWalls);
+                sHorWalls.postValue(horWalls);
+                break;
+        }
     }
 
     @Override

@@ -84,9 +84,23 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
         repository.stopService(context);
     }
 
-    public void sendMessage(String message){
-        repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
-        repository.sendMessage(message);
+    public void sendMessage(String msg){
+        String message = "";
+
+        switch(msg){
+
+            case Constants.SENDING_PROTOCOL_BACK_TO_MENU:
+                message = Constants.PROTOCOL_REFRESH_BACK_TO_MENU;
+                repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
+                break;
+
+            case Constants.SENDING_PROTOCOL_ACCELEROMETER:
+                message = Constants.PROTOCOL_REFRESH_ACCELEROMETER_LOGMESSAGE_HELLO;
+                repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
+                break;
+        }
+
+        repository.sendMessage(msg);
     }
 
     /*-------------------------- Repository Callbacks -----------------------------*/
@@ -104,9 +118,14 @@ public class AccelerometerViewModel extends ViewModel implements Repository.Repo
             iLiveAccelerometerX.postValue(subStrings[1]);
             iLiveAccelerometerY.postValue(subStrings[2]);
             iLiveAccelerometerZ.postValue(subStrings[3]);
+
+            String message = Constants.PROTOCOL_REFRESH_ACCELEROMETER_LOGMESSAGE + " x=" + subStrings[1] + ", y=" + subStrings[2] + " z=" + subStrings[3];
+            repository.writeFileLog(context,message,Constants.PROTOCOL_ARDUINO);
+
+        }else{
+            repository.writeFileLog(context,msg,Constants.PROTOCOL_ARDUINO);
         }
 
-        repository.writeFileLog(context,msg,Constants.PROTOCOL_ARDUINO);
     }
 
     @Override

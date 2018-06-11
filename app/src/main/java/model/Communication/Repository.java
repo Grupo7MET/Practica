@@ -88,16 +88,6 @@ public class Repository implements CommunicationService.CommunicationServiceInte
         repositoryCallback.onIncomingMessage(msg);
     }
 
-
-    /**
-     * pushes transmitted message to the Logviewmodel. Not Used in this deliverable.
-     * @param msg transmitted message
-     *
-    public void txMessage(String msg) {
-        String time = Calendar.getInstance().getTime().toString();
-        repositoryCallback.onIncomingMessage(time + " Android says: " + msg);
-    }*/
-
     /**
      * Method used to send a message from the View Models to outside
      * @param msg is the message to send

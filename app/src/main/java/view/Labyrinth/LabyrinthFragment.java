@@ -1,9 +1,13 @@
 package view.Labyrinth;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 import com.example.abmcr.robot.R;
 
 import model.Constants;
+import viewModel.LabyrinthViewModel;
 
 /**
  * Class that creates the labyrinth view, assign all the visual components and manage to paint the grid
@@ -27,7 +32,11 @@ public class LabyrinthFragment extends Fragment{
     private ImageView[][] ivVerticalWalls = new ImageView[constants.LABYRINTH_NROWS][constants.LABYRINTH_NCOLUMNS + 1];
     private ImageView[][] ivHorizontalWalls = new ImageView[constants.LABYRINTH_NROWS + 1][constants.LABYRINTH_NCOLUMNS];
 
-    private ImageView ivPlay;
+    private Observer<String> cells, verWalls, horWalls;
+
+    private ImageView ivPlay, ivReplay;
+
+    private LabyrinthViewModel viewModel;
 
     public static LabyrinthFragment newInstance(){
         return new LabyrinthFragment();
@@ -46,8 +55,7 @@ public class LabyrinthFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_labyrinth,container,false);
         bindViews(v);
-
-        playExamples();
+        initViewModel();
 
         return v;
     }
@@ -55,6 +63,7 @@ public class LabyrinthFragment extends Fragment{
     //Assigning all the visual components
     private void bindViews(View v){
         ivPlay = v.findViewById(R.id.ivPlay);
+        ivReplay = v.findViewById(R.id.ivReplay);
         assignCasillas(v);
         assignVerticalWalls(v);
         assignHorizontalWalls(v);
@@ -63,7 +72,14 @@ public class LabyrinthFragment extends Fragment{
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Play", Toast.LENGTH_SHORT).show();
+                viewModel.sendMessage(Constants.SENDING_PROTOCOL_LABYRINTH);
+            }
+        });
+
+        ivReplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.sendMessage(Constants.SENDING_PROTOCOL_REPLAY_LABYRINTH);
             }
         });
     }
@@ -165,12 +181,20 @@ public class LabyrinthFragment extends Fragment{
     //Void able to paint a cell in some colors depending on the state
     public void paintCell(int row, int column, String state){
         switch (state){
-            case "occupied":
-                ivCasillas[row][column].setBackgroundColor(Color.RED);
+            case Constants.PROTOCOL_STATE_VISITED:
+                ivCasillas[row][column].setBackgroundColor(Color.GRAY);
                 break;
 
-            case "free":
+            case Constants.PROTOCOL_STATE_CURRENT:
+                ivCasillas[row][column].setBackgroundResource(R.mipmap.ic_launcher);
+                break;
+
+            case Constants.PROTOCOL_STATE_SOLUTION:
                 ivCasillas[row][column].setBackgroundColor(Color.GREEN);
+                break;
+
+            case Constants.PROTOCOL_STATE_NOT_SOLUTION:
+                ivCasillas[row][column].setBackgroundColor(Color.RED);
                 break;
         }
     }
@@ -182,16 +206,71 @@ public class LabyrinthFragment extends Fragment{
 
     //Void able to paint horizontal walls
     public void paintHorizontalWall(int row, int column){
-        ivHorizontalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        ivHorizontalWalls[row][column].setBackgroundColor(getResources().getColor(R.color.colorBlack));
     }
 
-    //Example void showing we are able to paint
-    private void playExamples(){
-        paintCell(0,0,"free");
-        paintHorizontalWall(3,3);
-        paintVerticalWall(2,2);
-    }
+    private void initViewModel(){
 
+        viewModel = ViewModelProviders.of(this).get(LabyrinthViewModel.class);
+
+        cells = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                String[] subStrings;
+                subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
+                if(subStrings[0].equals(Constants.PROTOCOL_FINISHED)){
+                    int i = 1;
+                    do{
+                        paintCell(Integer.valueOf(subStrings[i+1]), Integer.valueOf(subStrings[i]), Constants.PROTOCOL_STATE_SOLUTION);
+                        i += 2;
+                    }while(i < subStrings.length);
+
+                }else {
+                    //paint previous cells as visited cells
+                    paintCell(Integer.valueOf(subStrings[1]), Integer.valueOf(subStrings[0]), Constants.PROTOCOL_STATE_VISITED);
+
+                    //place the current location for the robot
+                    paintCell(Integer.valueOf(subStrings[3]), Integer.valueOf(subStrings[2]), Constants.PROTOCOL_STATE_CURRENT);
+                }
+            }
+        };
+        viewModel.refreshCells(getContext()).observe(this, cells);
+
+        verWalls = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                String[] subStrings;
+                subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
+                if(subStrings.length > 0){
+
+                    paintVerticalWall(Integer.valueOf(subStrings[1]),Integer.valueOf(subStrings[0]));
+                    if(subStrings.length > 2){
+                        paintVerticalWall(Integer.valueOf(subStrings[3]),Integer.valueOf(subStrings[2]));
+                    }
+                }
+            }
+        };
+        viewModel.refreshVerWalls(getContext()).observe(this, verWalls);
+
+        horWalls = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String msg) {
+                String[] subStrings;
+                subStrings = msg.split(Constants.PROTOCOL_SPLIT);
+
+                if(subStrings.length > 0){
+                    paintHorizontalWall(Integer.valueOf(subStrings[1]),Integer.valueOf(subStrings[0]));
+                    if(subStrings.length > 2){
+                        paintHorizontalWall(Integer.valueOf(subStrings[3]),Integer.valueOf(subStrings[2]));
+                    }
+                }
+            }
+        };
+        viewModel.refreshHorWalls(getContext()).observe(this, horWalls);
+
+    }
 
     @Override
     public void onResume() {
@@ -205,7 +284,8 @@ public class LabyrinthFragment extends Fragment{
 
     @Override
     public void onStop() {
-        //viewModel.stopMessaging(getContext());
+        viewModel.sendMessage(Constants.SENDING_PROTOCOL_BACK_TO_MENU);
+        viewModel.stopMessaging(getContext());
         getActivity().finish();
         super.onStop();
     }

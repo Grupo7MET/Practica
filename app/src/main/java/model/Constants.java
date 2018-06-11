@@ -54,6 +54,8 @@ public class Constants {
     public static final String SENDING_PROTOCOL_MANUAL = "k";
     public static final String SENDING_PROTOCOL_REMOTE = "l";
     public static final String SENDING_PROTOCOL_ACCELEROMETER = "m";
+    public static final String SENDING_PROTOCOL_LABYRINTH = "n";
+    public static final String SENDING_PROTOCOL_REPLAY_LABYRINTH = "o";
     public static final String SENDING_PROTOCOL_BACK_TO_MENU = "q";
     public static final String SENDING_PROTOCOL_VELOCITY_MEDIUM = "2";
     public static final int SENDING_PROTOCOL_VELOCITY_MINUS1 = 4;
@@ -72,6 +74,10 @@ public class Constants {
 
     public static final int LABYRINTH_NROWS = 5;
     public static final int LABYRINTH_NCOLUMNS = 5;
+    public static final String PROTOCOL_STATE_VISITED = "visited";
+    public static final String PROTOCOL_STATE_CURRENT = "current";
+    public static final String PROTOCOL_STATE_SOLUTION = "solution";
+    public static final String PROTOCOL_STATE_NOT_SOLUTION = "not solution";
 
     //Accelerometer Challenge
 
@@ -83,6 +89,17 @@ public class Constants {
     public static final char PROTOCOL_SPACE = '\n';
     public static final String PROTOCOL_WHO_ANDROID = " Android says: ";
     public static final String PROTOCOL_WHO_ROBOT = " Robot says: ";
+
+    public static final String PROTOCOL_REFRESH_ACCELEROMETER_LOGMESSAGE = "Acceleration refresh.";
+    public static final String PROTOCOL_REFRESH_ACCELEROMETER_LOGMESSAGE_HELLO = "Entering in accelerometer mode";
+    public static final String PROTOCOL_REFRESH_BACK_TO_MENU = "Back to menu";
+    public static final String PROTOCOL_REFRESH_REMOTE_CIRCLE = "Making circle movement at gear";
+
+    public static final String PROTOCOL_NORTH = "n";
+    public static final String PROTOCOL_SOUTH = "s";
+    public static final String PROTOCOL_EAST = "e";
+    public static final String PROTOCOL_WEST = "w";
+    public static final String PROTOCOL_FINISHED = "f";
 
     /**
      * IP and ports for the transmission

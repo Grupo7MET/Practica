@@ -124,6 +124,16 @@ public class RemoteViewModel extends ViewModel implements Repository.RepositoryC
      * @param message is the message to send
      */
     public void sendMessage(String message){
+
+        /*char[] aux = message.toCharArray();
+        String msg;
+
+        switch(String.valueOf(aux[0])){
+            case Constants.SENDING_PROTOCOL_MOVEMENT_CIRCLE:
+                msg = Constants.PROTOCOL_REFRESH_REMOTE_CIRCLE + String.valueOf(aux[1]);
+                repository.writeFileLog(context,msg,Constants.PROTOCOL_ANDROID);
+                break;
+        }*/
         repository.writeFileLog(context,message,Constants.PROTOCOL_ANDROID);
         repository.sendMessage(message);
     }
